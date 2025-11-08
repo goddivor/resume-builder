@@ -101,47 +101,46 @@ const ResumeBuilder = () => {
     window.print();
   }
 
-  const toggleLanguage = async () => {
-    const newLanguage = language === 'en' ? 'fr' : 'en';
-
-    if (newLanguage === 'en' && originalData) {
+  const switchToEnglish = () => {
+    if (originalData) {
       setResumeData(originalData);
       setOriginalData(null);
-      setLanguage('en');
-      return;
     }
+    setLanguage('en');
+  };
 
-    if (newLanguage === 'fr') {
-      setIsTranslating(true);
-      try {
-        const dataToTranslate = {
-          personal_info: resumeData.personal_info,
-          professional_summary: resumeData.professional_summary,
-          experience: resumeData.experience,
-          education: resumeData.education,
-          project: resumeData.project,
-          publication: resumeData.publication,
-          skills: resumeData.skills
-        };
+  const switchToFrench = async () => {
+    if (language === 'fr') return;
 
-        const { data } = await api.post('/api/ai/translate', {
-          resumeData: dataToTranslate,
-          targetLanguage: 'fr'
-        }, { headers: { Authorization: token } });
+    setIsTranslating(true);
+    try {
+      const dataToTranslate = {
+        personal_info: resumeData.personal_info,
+        professional_summary: resumeData.professional_summary,
+        experience: resumeData.experience,
+        education: resumeData.education,
+        project: resumeData.project,
+        publication: resumeData.publication,
+        skills: resumeData.skills
+      };
 
-        setOriginalData(resumeData);
-        setResumeData({
-          ...resumeData,
-          ...data.translatedData
-        });
-        setLanguage('fr');
-        toast.success('Resume translated to French');
-      } catch (error) {
-        toast.error('Translation failed');
-        console.error(error);
-      } finally {
-        setIsTranslating(false);
-      }
+      const { data } = await api.post('/api/ai/translate', {
+        resumeData: dataToTranslate,
+        targetLanguage: 'fr'
+      }, { headers: { Authorization: token } });
+
+      setOriginalData(resumeData);
+      setResumeData({
+        ...resumeData,
+        ...data.translatedData
+      });
+      setLanguage('fr');
+      toast.success('Resume translated to French');
+    } catch (error) {
+      toast.error('Translation failed');
+      console.error(error);
+    } finally {
+      setIsTranslating(false);
     }
   }
 
@@ -263,14 +262,23 @@ const saveResume = async () => {
           <div className='lg:col-span-7 max-lg:mt-6'>
               <div className='relative w-full'>
                 <div className='absolute bottom-3 left-0 right-0 flex items-center justify-end gap-2'>
-                    <button
-                      onClick={toggleLanguage}
-                      disabled={isTranslating}
-                      className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 rounded-lg ring-orange-300 hover:ring transition-colors disabled:opacity-50'
-                    >
-                      <Languages className='size-4'/>
-                      {isTranslating ? 'Translating...' : language === 'en' ? 'FR' : 'EN'}
-                    </button>
+                    <div className='flex items-center gap-1'>
+                      <button
+                        onClick={switchToEnglish}
+                        disabled={isTranslating}
+                        className={`flex items-center p-2 px-3 gap-1 text-xs rounded-lg transition-colors disabled:opacity-50 ${language === 'en' ? 'bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 ring ring-orange-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      >
+                        EN
+                      </button>
+                      <button
+                        onClick={switchToFrench}
+                        disabled={isTranslating}
+                        className={`flex items-center p-2 px-3 gap-1 text-xs rounded-lg transition-colors disabled:opacity-50 ${language === 'fr' ? 'bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 ring ring-orange-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                      >
+                        {isTranslating ? <Languages className='size-3 animate-spin'/> : null}
+                        FR
+                      </button>
+                    </div>
                     {resumeData.public && (
                       <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
                         <Share2Icon className='size-4'/> Share
