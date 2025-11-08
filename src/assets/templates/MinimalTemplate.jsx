@@ -1,5 +1,7 @@
+import { translations } from "../../utils/translations";
 
-const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
+const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
+    const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         const [year, month] = dateStr.split("-");
@@ -54,7 +56,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
             {data.experience && data.experience.length > 0 && (
                 <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
-                        Experience
+                        {t.experience}
                     </h2>
 
                     <div className="space-y-6">
@@ -63,7 +65,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
                                 <div className="flex justify-between items-baseline mb-1">
                                     <h3 className="text-lg font-medium">{exp.position}</h3>
                                     <span className="text-sm text-gray-500">
-                                        {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                                        {formatDate(exp.start_date)} - {exp.is_current ? t.present : formatDate(exp.end_date)}
                                     </span>
                                 </div>
                                 <p className="text-gray-600 mb-2">{exp.company}</p>
@@ -82,7 +84,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
             {data.project && data.project.length > 0 && (
                 <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
-                        Projects
+                        {t.projects}
                     </h2>
 
                     <div className="space-y-4">
@@ -100,7 +102,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
             {data.publication && data.publication.length > 0 && (
                 <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
-                        Publications
+                        {t.publications}
                     </h2>
 
                     <div className="space-y-6">
@@ -132,7 +134,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
             {data.education && data.education.length > 0 && (
                 <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
-                        Education
+                        {t.education}
                     </h2>
 
                     <div className="space-y-4">
@@ -158,7 +160,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true }) => {
             {data.skills && data.skills.length > 0 && (
                 <section>
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
-                        Skills
+                        {t.skills}
                     </h2>
 
                     <div className="text-gray-700">

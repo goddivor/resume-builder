@@ -1,6 +1,8 @@
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { translations } from "../../utils/translations";
 
-const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
+const ClassicTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
+    const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         const [year, month] = dateStr.split("-");
@@ -67,7 +69,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.professional_summary && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-3" style={{ color: accentColor }}>
-                        PROFESSIONAL SUMMARY
+                        {t.professionalSummary}
                     </h2>
                     <p className="text-gray-700 leading-relaxed">{data.professional_summary}</p>
                 </section>
@@ -77,7 +79,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.experience && data.experience.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
-                        PROFESSIONAL EXPERIENCE
+                        {t.professionalExperience}
                     </h2>
 
                     <div className="space-y-4">
@@ -89,7 +91,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
                                         <p className="text-gray-700 font-medium">{exp.company}</p>
                                     </div>
                                     <div className="text-right text-sm text-gray-600">
-                                        <p>{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}</p>
+                                        <p>{formatDate(exp.start_date)} - {exp.is_current ? t.present : formatDate(exp.end_date)}</p>
                                     </div>
                                 </div>
                                 {exp.description && (
@@ -107,7 +109,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.project && data.project.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
-                        PROJECTS
+                        {t.projects}
                     </h2>
 
                     <ul className="space-y-3 ">
@@ -127,7 +129,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.publication && data.publication.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
-                        PUBLICATIONS
+                        {t.publications}
                     </h2>
 
                     <div className="space-y-4">
@@ -163,7 +165,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.education && data.education.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
-                        EDUCATION
+                        {t.education}
                     </h2>
 
                     <div className="space-y-3">
@@ -189,7 +191,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
             {data.skills && data.skills.length > 0 && (
                 <section className="mb-6">
                     <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
-                        CORE SKILLS
+                        {t.coreSkills}
                     </h2>
 
                     <div className="flex gap-4 flex-wrap">

@@ -1,6 +1,8 @@
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
+import { translations } from "../../utils/translations";
 
-const ModernTemplate = ({ data, accentColor, showImage = true }) => {
+const ModernTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
+	const t = translations[language];
 	const formatDate = (dateStr) => {
 		if (!dateStr) return "";
 		const [year, month] = dateStr.split("-");
@@ -66,7 +68,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 				{data.professional_summary && (
 					<section className="mb-8">
 						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-							Professional Summary
+							{t.professionalSummary}
 						</h2>
 						<p className="text-gray-700 ">{data.professional_summary}</p>
 					</section>
@@ -76,7 +78,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 				{data.experience && data.experience.length > 0 && (
 					<section className="mb-8">
 						<h2 className="text-2xl font-light mb-6 pb-2 border-b border-gray-200">
-							Experience
+							{t.experience}
 						</h2>
 
 						<div className="space-y-6">
@@ -89,7 +91,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 											<p className="font-medium" style={{ color: accentColor }}>{exp.company}</p>
 										</div>
 										<div className="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded">
-											{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
+											{formatDate(exp.start_date)} - {exp.is_current ? t.present : formatDate(exp.end_date)}
 										</div>
 									</div>
 									{exp.description && (
@@ -107,7 +109,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 				{data.project && data.project.length > 0 && (
 					<section className="mb-8">
 						<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-							Projects
+							{t.projects}
 						</h2>
 
 						<div className="space-y-6">
@@ -135,7 +137,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 				{data.publication && data.publication.length > 0 && (
 					<section className="mb-8">
 						<h2 className="text-2xl font-light mb-6 pb-2 border-b border-gray-200">
-							Publications
+							{t.publications}
 						</h2>
 
 						<div className="space-y-6">
@@ -172,7 +174,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 					{data.education && data.education.length > 0 && (
 						<section>
 							<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-								Education
+								{t.education}
 							</h2>
 
 							<div className="space-y-4">
@@ -196,7 +198,7 @@ const ModernTemplate = ({ data, accentColor, showImage = true }) => {
 					{data.skills && data.skills.length > 0 && (
 						<section>
 							<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
-								Skills
+								{t.skills}
 							</h2>
 
 							<div className="flex flex-wrap gap-2">

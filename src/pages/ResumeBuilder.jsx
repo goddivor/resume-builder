@@ -266,14 +266,14 @@ const saveResume = async () => {
                       <button
                         onClick={switchToEnglish}
                         disabled={isTranslating}
-                        className={`flex items-center p-2 px-3 gap-1 text-xs rounded-lg transition-colors disabled:opacity-50 ${language === 'en' ? 'bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 ring ring-orange-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className='flex items-center p-2 px-3 gap-1 text-xs bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 rounded-lg ring-orange-300 hover:ring transition-colors disabled:opacity-50'
                       >
                         EN
                       </button>
                       <button
                         onClick={switchToFrench}
                         disabled={isTranslating}
-                        className={`flex items-center p-2 px-3 gap-1 text-xs rounded-lg transition-colors disabled:opacity-50 ${language === 'fr' ? 'bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 ring ring-orange-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                        className='flex items-center p-2 px-3 gap-1 text-xs bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 rounded-lg ring-orange-300 hover:ring transition-colors disabled:opacity-50'
                       >
                         {isTranslating ? <Languages className='size-3 animate-spin'/> : null}
                         FR
@@ -294,7 +294,7 @@ const saveResume = async () => {
                 </div>
               </div>
 
-              <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color}/>
+              <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} language={language}/>
           </div>
         </div>
       </div>

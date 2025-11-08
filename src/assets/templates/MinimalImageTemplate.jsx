@@ -1,6 +1,8 @@
 import { Mail, Phone, MapPin } from "lucide-react";
+import { translations } from "../../utils/translations";
 
-const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
+const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
+    const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         const [year, month] = dateStr.split("-");
@@ -46,7 +48,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {/* Contact */}
                     <section className="mb-8">
                         <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
-                            CONTACT
+                            {t.contact}
                         </h2>
                         <div className="space-y-2 text-sm">
                             {data.personal_info?.phone && (
@@ -74,7 +76,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.education && data.education.length > 0 && (
                         <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
-                                EDUCATION
+                                {t.education}
                             </h2>
                             <div className="space-y-4 text-sm">
                                 {data.education.map((edu, index) => (
@@ -94,7 +96,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.skills && data.skills.length > 0 && (
                         <section>
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
-                                SKILLS
+                                {t.skills}
                             </h2>
                             <ul className="space-y-1 text-sm">
                                 {data.skills.map((skill, index) => (
@@ -112,7 +114,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.professional_summary && (
                         <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest mb-3" style={{ color: accentColor }} >
-                                SUMMARY
+                                {t.summary}
                             </h2>
                             <p className="text-zinc-700 leading-relaxed">
                                 {data.professional_summary}
@@ -124,7 +126,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.experience && data.experience.length > 0 && (
                         <section>
                             <h2 className="text-sm font-semibold tracking-widest mb-4" style={{ color: accentColor }} >
-                                EXPERIENCE
+                                {t.experience}
                             </h2>
                             <div className="space-y-6 mb-8">
                                 {data.experience.map((exp, index) => (
@@ -135,7 +137,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                                             </h3>
                                             <span className="text-xs text-zinc-500">
                                                 {formatDate(exp.start_date)} -{" "}
-                                                {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                                                {exp.is_current ? t.present : formatDate(exp.end_date)}
                                             </span>
                                         </div>
                                         <p className="text-sm mb-2" style={{ color: accentColor }} >
@@ -158,7 +160,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.project && data.project.length > 0 && (
                         <section className="mb-8">
                             <h2 className="text-sm uppercase tracking-widest font-semibold" style={{ color: accentColor }}>
-                                PROJECTS
+                                {t.projects}
                             </h2>
                             <div className="space-y-4">
                                 {data.project.map((project, index) => (
@@ -184,7 +186,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true }) => {
                     {data.publication && data.publication.length > 0 && (
                         <section>
                             <h2 className="text-sm uppercase tracking-widest font-semibold mb-4" style={{ color: accentColor }}>
-                                PUBLICATIONS
+                                {t.publications}
                             </h2>
                             <div className="space-y-6">
                                 {data.publication.map((pub, index) => (
