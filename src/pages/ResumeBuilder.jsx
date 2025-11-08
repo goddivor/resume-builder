@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Languages, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -11,6 +11,7 @@ import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
 import PublicationForm from '../components/PublicationForm'
+import SignatureForm from '../components/SignatureForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
@@ -30,6 +31,7 @@ const ResumeBuilder = () => {
     project: [],
     publication: [],
     skills: [],
+    signature: {},
     template: "classic",
     accent_color: "#3B82F6",
     template_settings: {},
@@ -50,6 +52,7 @@ const ResumeBuilder = () => {
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0)
   const [removeBackground, setRemoveBackground] = useState(false);
+  const [removeSignatureBackground, setRemoveSignatureBackground] = useState(false);
   const [language, setLanguage] = useState('en');
   const [originalData, setOriginalData] = useState(null);
   const [isTranslating, setIsTranslating] = useState(false);
@@ -62,6 +65,7 @@ const ResumeBuilder = () => {
     { id: "projects", name: "Projects", icon: FolderIcon },
     { id: "publications", name: "Publications", icon: BookOpen },
     { id: "skills", name: "Skills", icon: Sparkles },
+    { id: "signature", name: "Signature", icon: PenTool },
   ]
 
   const activeSection = sections[activeSectionIndex]
@@ -154,11 +158,18 @@ const saveResume = async () => {
       delete updatedResumeData.personal_info.image
     }
 
+    // remove signature image from updatedResumeData
+    if(typeof resumeData.signature?.image === 'object'){
+      delete updatedResumeData.signature.image
+    }
+
     const formData = new FormData();
     formData.append("resumeId", resumeId)
     formData.append('resumeData', JSON.stringify(updatedResumeData))
     removeBackground && formData.append("removeBackground", "yes");
+    removeSignatureBackground && formData.append("removeSignatureBackground", "yes");
     typeof resumeData.personal_info.image === 'object' && formData.append("image", resumeData.personal_info.image)
+    typeof resumeData.signature?.image === 'object' && formData.append("signature", resumeData.signature.image)
 
     const { data } = await api.put('/api/resumes/update', formData, {headers: { Authorization: token }})
 
@@ -249,6 +260,9 @@ const saveResume = async () => {
                   )}
                   {activeSection.id === 'skills' && (
                     <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))}/>
+                  )}
+                  {activeSection.id === 'signature' && (
+                    <SignatureForm data={resumeData.signature} onChange={(data)=> setResumeData(prev=> ({...prev, signature: data}))} removeSignatureBackground={removeSignatureBackground} setRemoveSignatureBackground={setRemoveSignatureBackground}/>
                   )}
 
               </div>

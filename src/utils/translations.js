@@ -10,6 +10,8 @@ export const translations = {
     projects: "PROJECTS",
     publications: "PUBLICATIONS",
     contact: "CONTACT",
+    signature: "SIGNATURE",
+    date: "Date",
     present: "Present"
   },
   fr: {
@@ -23,6 +25,8 @@ export const translations = {
     projects: "PROJETS",
     publications: "PUBLICATIONS",
     contact: "CONTACT",
+    signature: "SIGNATURE",
+    date: "Date",
     present: "Présent"
   }
 };

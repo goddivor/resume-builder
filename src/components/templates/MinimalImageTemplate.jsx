@@ -214,6 +214,26 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
                             </div>
                         </section>
                     )}
+
+                    {/* Signature */}
+                    {(data.signature?.image || data.signature?.date) && (
+                        <section className="mt-8">
+                            <div className="flex flex-col items-end">
+                                {data.signature.image && (
+                                    <img
+                                        src={typeof data.signature.image === 'string' ? data.signature.image : URL.createObjectURL(data.signature.image)}
+                                        alt="Signature"
+                                        className="h-16 mb-2 object-contain"
+                                    />
+                                )}
+                                {data.signature.date && (
+                                    <p className="text-xs text-zinc-600">
+                                        {t.date}: {new Date(data.signature.date).toLocaleDateString()}
+                                    </p>
+                                )}
+                            </div>
+                        </section>
+                    )}
                 </main>
             </div>
         </div>
