@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -32,6 +32,7 @@ const ResumeBuilder = () => {
     skills: [],
     template: "classic",
     accent_color: "#3B82F6",
+    template_settings: {},
     public: false,
   })
 
@@ -146,6 +147,26 @@ const saveResume = async () => {
                 <div className='flex items-center gap-2'>
                   <TemplateSelector selectedTemplate={resumeData.template} onChange={(template)=> setResumeData(prev => ({...prev, template}))}/>
                   <ColorPicker selectedColor={resumeData.accent_color} onChange={(color)=>setResumeData(prev => ({...prev, accent_color: color}))}/>
+                  <label className='flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors text-xs text-gray-700' title="Show profile image in preview">
+                    <input
+                      type="checkbox"
+                      checked={resumeData.template_settings?.[resumeData.template]?.show_image !== false}
+                      onChange={(e)=>{
+                        setResumeData(prev => ({
+                          ...prev,
+                          template_settings: {
+                            ...prev.template_settings,
+                            [prev.template]: {
+                              ...prev.template_settings?.[prev.template],
+                              show_image: e.target.checked
+                            }
+                          }
+                        }))
+                      }}
+                      className='w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+                    />
+                    <ImageIcon className='size-3.5'/>
+                  </label>
                 </div>
 
                 <div className='flex items-center'>

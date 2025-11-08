@@ -1,6 +1,6 @@
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 
-const ClassicTemplate = ({ data, accentColor }) => {
+const ClassicTemplate = ({ data, accentColor, showImage = true }) => {
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
         const [year, month] = dateStr.split("-");
@@ -14,6 +14,17 @@ const ClassicTemplate = ({ data, accentColor }) => {
         <div className="max-w-4xl mx-auto p-8 bg-white text-gray-800 leading-relaxed">
             {/* Header */}
             <header className="text-center mb-8 pb-6 border-b-2" style={{ borderColor: accentColor }}>
+                {showImage && data.personal_info?.image && typeof data.personal_info.image === 'string' ? (
+                    <div className="mb-4">
+                        <img src={data.personal_info.image} alt="Profile" className="w-24 h-24 object-cover rounded-full mx-auto border-4" style={{ borderColor: accentColor }} />
+                    </div>
+                ) : (
+                    showImage && data.personal_info?.image && typeof data.personal_info.image === 'object' ? (
+                        <div className="mb-4">
+                            <img src={URL.createObjectURL(data.personal_info.image)} alt="Profile" className="w-24 h-24 object-cover rounded-full mx-auto border-4" style={{ borderColor: accentColor }} />
+                        </div>
+                    ) : null
+                )}
                 <h1 className="text-3xl font-bold mb-2" style={{ color: accentColor }}>
                     {data.personal_info?.full_name || "Your Name"}
                 </h1>

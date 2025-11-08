@@ -6,17 +6,19 @@ import MinimalImageTemplate from './templates/MinimalImageTemplate'
 
 const ResumePreview = ({data, template, accentColor, classes = ""}) => {
 
+    const showImage = data.template_settings?.[template]?.show_image !== false;
+
     const renderTemplate = ()=>{
         switch (template) {
             case "modern":
-                return <ModernTemplate data={data} accentColor={accentColor}/>;
+                return <ModernTemplate data={data} accentColor={accentColor} showImage={showImage}/>;
             case "minimal":
-                return <MinimalTemplate data={data} accentColor={accentColor}/>;
+                return <MinimalTemplate data={data} accentColor={accentColor} showImage={showImage}/>;
             case "minimal-image":
-                return <MinimalImageTemplate data={data} accentColor={accentColor}/>;
+                return <MinimalImageTemplate data={data} accentColor={accentColor} showImage={showImage}/>;
 
             default:
-                return <ClassicTemplate data={data} accentColor={accentColor}/>;
+                return <ClassicTemplate data={data} accentColor={accentColor} showImage={showImage}/>;
         }
     }
 
