@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Languages, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -50,6 +50,9 @@ const ResumeBuilder = () => {
 
   const [activeSectionIndex, setActiveSectionIndex] = useState(0)
   const [removeBackground, setRemoveBackground] = useState(false);
+  const [language, setLanguage] = useState('en');
+  const [originalData, setOriginalData] = useState(null);
+  const [isTranslating, setIsTranslating] = useState(false);
 
   const sections = [
     { id: "personal", name: "Personal Info", icon: User },
@@ -96,6 +99,50 @@ const ResumeBuilder = () => {
 
   const downloadResume = ()=>{
     window.print();
+  }
+
+  const toggleLanguage = async () => {
+    const newLanguage = language === 'en' ? 'fr' : 'en';
+
+    if (newLanguage === 'en' && originalData) {
+      setResumeData(originalData);
+      setOriginalData(null);
+      setLanguage('en');
+      return;
+    }
+
+    if (newLanguage === 'fr') {
+      setIsTranslating(true);
+      try {
+        const dataToTranslate = {
+          personal_info: resumeData.personal_info,
+          professional_summary: resumeData.professional_summary,
+          experience: resumeData.experience,
+          education: resumeData.education,
+          project: resumeData.project,
+          publication: resumeData.publication,
+          skills: resumeData.skills
+        };
+
+        const { data } = await api.post('/api/ai/translate', {
+          resumeData: dataToTranslate,
+          targetLanguage: 'fr'
+        }, { headers: { Authorization: token } });
+
+        setOriginalData(resumeData);
+        setResumeData({
+          ...resumeData,
+          ...data.translatedData
+        });
+        setLanguage('fr');
+        toast.success('Resume translated to French');
+      } catch (error) {
+        toast.error('Translation failed');
+        console.error(error);
+      } finally {
+        setIsTranslating(false);
+      }
+    }
   }
 
 
@@ -216,6 +263,14 @@ const saveResume = async () => {
           <div className='lg:col-span-7 max-lg:mt-6'>
               <div className='relative w-full'>
                 <div className='absolute bottom-3 left-0 right-0 flex items-center justify-end gap-2'>
+                    <button
+                      onClick={toggleLanguage}
+                      disabled={isTranslating}
+                      className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-orange-100 to-orange-200 text-orange-600 rounded-lg ring-orange-300 hover:ring transition-colors disabled:opacity-50'
+                    >
+                      <Languages className='size-4'/>
+                      {isTranslating ? 'Translating...' : language === 'en' ? 'FR' : 'EN'}
+                    </button>
                     {resumeData.public && (
                       <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
                         <Share2Icon className='size-4'/> Share
