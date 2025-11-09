@@ -90,14 +90,38 @@ const ResumeBuilder = () => {
     }
   }
 
-  const handleShare = () =>{
+  const handleShare = async () => {
     const frontendUrl = window.location.href.split('/app/')[0];
     const resumeUrl = frontendUrl + '/view/' + resumeId;
 
-    if(navigator.share){
-      navigator.share({url: resumeUrl, text: "My Resume", })
-    }else{
-      alert('Share not supported on this browser.')
+    try {
+      // Try Web Share API first
+      if (navigator.share && navigator.canShare && navigator.canShare({ url: resumeUrl })) {
+        await navigator.share({
+          title: resumeData.title || 'My Resume',
+          text: 'Check out my resume',
+          url: resumeUrl
+        });
+        toast.success('Shared successfully!');
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(resumeUrl);
+        toast.success('Link copied to clipboard!');
+      }
+    } catch (error) {
+      // If both fail, use clipboard as final fallback
+      if (error.name === 'AbortError') {
+        // User cancelled the share
+        return;
+      }
+
+      try {
+        await navigator.clipboard.writeText(resumeUrl);
+        toast.success('Link copied to clipboard!');
+      } catch (clipboardError) {
+        // Last resort: show URL in prompt
+        prompt('Copy this link to share your resume:', resumeUrl);
+      }
     }
   }
 
