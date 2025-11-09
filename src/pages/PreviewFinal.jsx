@@ -90,7 +90,7 @@ const PreviewFinal = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 secondes de timeout
 
-      const cvResponse = await fetch(`http://localhost:3000/api/resumes/${resumeId}/generate-pdf`, {
+      const cvResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/resumes/${resumeId}/generate-pdf`, {
         method: 'POST',
         headers: {
           'Authorization': token,
@@ -128,7 +128,7 @@ const PreviewFinal = () => {
         // 4. Ajouter les PDFs des annexes
         for (const annexe of annexes) {
           try {
-            const proxyUrl = `http://localhost:3000/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}`;
+            const proxyUrl = `${import.meta.env.VITE_BASE_URL}/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}`;
             const annexePdfBytes = await fetch(proxyUrl).then(res => res.arrayBuffer());
             const annexePdfDoc = await PDFDocument.load(annexePdfBytes);
 

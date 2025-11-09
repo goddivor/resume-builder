@@ -25,7 +25,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
   const annexeUrls = useMemo(() => {
     return annexes.map(annexe => ({
       id: annexe._id,
-      file: { url: `http://localhost:3000/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}` }
+      file: { url: `${import.meta.env.VITE_BASE_URL}/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}` }
     }));
   }, [annexes]);
 
@@ -49,8 +49,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
           </div>
 
           {/* Annexe PDF Previews */}
-          {annexeUrls.map((annexeUrl, index) => {
-            const annexe = annexes[index];
+          {annexeUrls.map((annexeUrl) => {
 
             return (
               <div key={annexeUrl.id} className='bg-white shadow-lg p-4'>
