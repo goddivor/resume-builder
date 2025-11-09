@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import ResumePreview from '../components/ResumePreview'
+import FinalResumePreview from '../components/FinalResumePreview'
 import Loader from '../components/Loader'
 import { ArrowLeftIcon } from 'lucide-react'
 import api from '../configs/api'
@@ -10,11 +10,21 @@ const Preview = () => {
 
   const [isLoading, setIsLoading] = useState(true)
   const [resumeData, setResumeData] = useState(null)
+  const [annexes, setAnnexes] = useState([])
 
   const loadResume = async () => {
     try {
-      const { data } = await api.get('/api/resumes/public/' + resumeId)
+      const { data } = await api.get('/api/resumes/public/' + resumeId + '/with-annexes')
       setResumeData(data.resume)
+
+      // Extract annexes data
+      if (data.resume.annexes && data.resume.annexes.length > 0) {
+        const sortedAnnexes = data.resume.annexes
+          .filter(a => a.annexeId)
+          .sort((a, b) => a.order - b.order)
+          .map(a => a.annexeId);
+        setAnnexes(sortedAnnexes);
+      }
     } catch (error) {
       console.log(error.message);
     }finally{
@@ -27,8 +37,13 @@ const Preview = () => {
   },[])
   return resumeData ? (
     <div className='bg-slate-100'>
-      <div className='max-w-3xl mx-auto py-10'>
-        <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} classes='py-4 bg-white'/>
+      <div className='max-w-4xl mx-auto py-10 px-4'>
+        <FinalResumePreview
+          resumeData={resumeData}
+          annexes={annexes}
+          template={resumeData.template}
+          accentColor={resumeData.accent_color}
+        />
       </div>
     </div>
   ) : (
