@@ -1,4 +1,4 @@
-import { FilePenLineIcon, LoaderCircleIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon, FileTextIcon, FolderOpenIcon, PaperclipIcon, EyeIcon } from 'lucide-react'
+import { FilePenLineIcon, LoaderCircleIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon, FileTextIcon, FolderOpenIcon, PaperclipIcon, EyeIcon, CopyIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import {useNavigate} from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -95,6 +95,16 @@ const Dashboard = () => {
 
   }
 
+  const cloneResume = async (resumeId) => {
+    try {
+      const {data} = await api.post(`/api/resumes/${resumeId}/clone`, {}, {headers: { Authorization: token }})
+      setAllResumes([...allResumes, data.resume])
+      toast.success(data.message)
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message)
+    }
+  }
+
   const uploadAnnexe = async (event) => {
     event.preventDefault()
     setIsLoading(true)
@@ -168,10 +178,11 @@ const Dashboard = () => {
                  Updated on {new Date(resume.updatedAt).toLocaleDateString()}
               </p>
 
-              {/* Top right buttons - View, Annexes, Delete, Rename */}
+              {/* Top right buttons - View, Annexes, Clone, Delete, Rename */}
               <div onClick={e=> e.stopPropagation()} className='absolute top-1 right-1 group-hover:flex items-center hidden'>
                 <EyeIcon onClick={()=> navigate(`/app/preview-final/${resume._id}`)} className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors cursor-pointer" title="View Final"/>
                 <PaperclipIcon onClick={()=> {setSelectedResumeId(resume._id); setShowAssignAnnexes(true)}} className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors cursor-pointer" title="Assign Annexes"/>
+                <CopyIcon onClick={()=>cloneResume(resume._id)} className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors cursor-pointer" title="Clone"/>
                 <TrashIcon onClick={()=>deleteResume(resume._id)} className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors cursor-pointer" title="Delete"/>
                 <PencilIcon onClick={()=> {setEditResumeId(resume._id); setTitle(resume.title)}} className="size-7 p-1.5 hover:bg-white/50 rounded text-slate-700 transition-colors cursor-pointer" title="Rename"/>
               </div>
