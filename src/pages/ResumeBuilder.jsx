@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, Globe2, GraduationCap, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -11,13 +11,15 @@ import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
 import PublicationForm from '../components/PublicationForm'
+import LanguagesForm from '../components/LanguagesForm'
 import SignatureForm from '../components/SignatureForm'
 import { useSelector } from 'react-redux'
 import api from '../configs/api'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 const ResumeBuilder = () => {
-
+  const { t, i18n } = useTranslation();
   const { resumeId } = useParams()
   const {token} = useSelector(state => state.auth)
 
@@ -31,6 +33,7 @@ const ResumeBuilder = () => {
     project: [],
     publication: [],
     skills: [],
+    languages: [],
     signature: {},
     template: "classic",
     accent_color: "#3B82F6",
@@ -58,14 +61,15 @@ const ResumeBuilder = () => {
   const [isTranslating, setIsTranslating] = useState(false);
 
   const sections = [
-    { id: "personal", name: "Personal Info", icon: User },
-    { id: "summary", name: "Summary", icon: FileText },
-    { id: "experience", name: "Experience", icon: Briefcase },
-    { id: "education", name: "Education", icon: GraduationCap },
-    { id: "projects", name: "Projects", icon: FolderIcon },
-    { id: "publications", name: "Publications", icon: BookOpen },
-    { id: "skills", name: "Skills", icon: Sparkles },
-    { id: "signature", name: "Signature", icon: PenTool },
+    { id: "personal", name: t('resumeBuilder.sections.personal'), icon: User },
+    { id: "summary", name: t('resumeBuilder.sections.summary'), icon: FileText },
+    { id: "experience", name: t('resumeBuilder.sections.experience'), icon: Briefcase },
+    { id: "education", name: t('resumeBuilder.sections.education'), icon: GraduationCap },
+    { id: "projects", name: t('resumeBuilder.sections.projects'), icon: FolderIcon },
+    { id: "publications", name: t('resumeBuilder.sections.publications'), icon: BookOpen },
+    { id: "skills", name: t('resumeBuilder.sections.skills'), icon: Sparkles },
+    { id: "languages", name: t('resumeBuilder.sections.languages'), icon: Globe2 },
+    { id: "signature", name: t('resumeBuilder.sections.signature'), icon: PenTool },
   ]
 
   const activeSection = sections[activeSectionIndex]
@@ -102,11 +106,11 @@ const ResumeBuilder = () => {
           text: 'Check out my resume',
           url: resumeUrl
         });
-        toast.success('Shared successfully!');
+        toast.success(t('resumeBuilder.sharedSuccess'));
       } else {
         // Fallback to clipboard
         await navigator.clipboard.writeText(resumeUrl);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('resumeBuilder.linkCopied'));
       }
     } catch (error) {
       // If both fail, use clipboard as final fallback
@@ -117,10 +121,11 @@ const ResumeBuilder = () => {
 
       try {
         await navigator.clipboard.writeText(resumeUrl);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('resumeBuilder.linkCopied'));
+      // eslint-disable-next-line no-unused-vars
       } catch (clipboardError) {
         // Last resort: show URL in prompt
-        prompt('Copy this link to share your resume:', resumeUrl);
+        prompt(t('resumeBuilder.copyLinkPrompt'), resumeUrl);
       }
     }
   }
@@ -163,9 +168,9 @@ const ResumeBuilder = () => {
         ...data.translatedData
       });
       setLanguage('fr');
-      toast.success('Resume translated to French');
+      toast.success(t('resumeBuilder.translatedSuccess'));
     } catch (error) {
-      toast.error('Translation failed');
+      toast.error(t('resumeBuilder.translationFailed'));
       console.error(error);
     } finally {
       setIsTranslating(false);
@@ -209,7 +214,7 @@ const saveResume = async () => {
 
       <div className="max-w-7xl mx-auto px-4 py-6">
         <Link to={'/app'} className='inline-flex gap-2 items-center text-slate-500 hover:text-slate-700 transition-all'>
-          <ArrowLeftIcon className="size-4"/> Back to Dashboard
+          <ArrowLeftIcon className="size-4"/> {t('resumeBuilder.backToDashboard')}
         </Link>
       </div>
 
@@ -228,7 +233,7 @@ const saveResume = async () => {
                 <div className='flex items-center gap-2'>
                   <TemplateSelector selectedTemplate={resumeData.template} onChange={(template)=> setResumeData(prev => ({...prev, template}))}/>
                   <ColorPicker selectedColor={resumeData.accent_color} onChange={(color)=>setResumeData(prev => ({...prev, accent_color: color}))}/>
-                  <label className='flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors text-xs text-gray-700' title="Show profile image in preview">
+                  <label className='flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors text-xs text-gray-700' title={t('resumeBuilder.showImage')}>
                     <input
                       type="checkbox"
                       checked={resumeData.template_settings?.[resumeData.template]?.show_image !== false}
@@ -253,11 +258,11 @@ const saveResume = async () => {
                 <div className='flex items-center'>
                   {activeSectionIndex !== 0 && (
                     <button onClick={()=> setActiveSectionIndex((prevIndex)=> Math.max(prevIndex - 1, 0))} className='flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all' disabled={activeSectionIndex === 0}>
-                      <ChevronLeft className="size-4"/> Previous
+                      <ChevronLeft className="size-4"/> {t('resumeBuilder.previous')}
                     </button>
                   )}
                   <button onClick={()=> setActiveSectionIndex((prevIndex)=> Math.min(prevIndex + 1, sections.length - 1))} className={`flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all ${activeSectionIndex === sections.length - 1 && 'opacity-50'}`} disabled={activeSectionIndex === sections.length - 1}>
-                      Next <ChevronRight className="size-4"/>
+                      {t('resumeBuilder.next')} <ChevronRight className="size-4"/>
                     </button>
                 </div>
               </div>
@@ -285,13 +290,16 @@ const saveResume = async () => {
                   {activeSection.id === 'skills' && (
                     <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))}/>
                   )}
+                  {activeSection.id === 'languages' && (
+                    <LanguagesForm data={resumeData.languages} onChange={(data)=> setResumeData(prev=> ({...prev, languages: data}))}/>
+                  )}
                   {activeSection.id === 'signature' && (
                     <SignatureForm data={resumeData.signature} onChange={(data)=> setResumeData(prev=> ({...prev, signature: data}))} removeSignatureBackground={removeSignatureBackground} setRemoveSignatureBackground={setRemoveSignatureBackground}/>
                   )}
 
               </div>
-              <button onClick={()=> {toast.promise(saveResume, {loading: 'Saving...'})}} className='bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'>
-                Save Changes
+              <button onClick={()=> {toast.promise(saveResume, {loading: t('resumeBuilder.saving')})}} className='bg-gradient-to-br from-green-100 to-green-200 ring-green-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'>
+                {t('resumeBuilder.saveChanges')}
               </button>
             </div>
           </div>
@@ -319,20 +327,20 @@ const saveResume = async () => {
                     </div>
                     {resumeData.public && (
                       <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
-                        <Share2Icon className='size-4'/> Share
+                        <Share2Icon className='size-4'/> {t('resumeBuilder.share')}
                       </button>
                     )}
                     <button onClick={changeResumeVisibility} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-purple-100 to-purple-200 text-purple-600 ring-purple-300 rounded-lg hover:ring transition-colors'>
                       {resumeData.public ? <EyeIcon className="size-4"/> : <EyeOffIcon className="size-4"/>}
-                      {resumeData.public ? 'Public' : 'Private'}
+                      {resumeData.public ? t('resumeBuilder.public') : t('resumeBuilder.private')}
                     </button>
                     <button onClick={downloadResume} className='flex items-center gap-2 px-6 py-2 text-xs bg-gradient-to-br from-green-100 to-green-200 text-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
-                      <DownloadIcon className='size-4'/> Download
+                      <DownloadIcon className='size-4'/> {t('resumeBuilder.download')}
                     </button>
                 </div>
               </div>
 
-              <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} language={language}/>
+              <ResumePreview data={resumeData} template={resumeData.template} accentColor={resumeData.accent_color} language={i18n.language}/>
           </div>
         </div>
       </div>
