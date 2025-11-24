@@ -1,8 +1,10 @@
 import React from 'react'
 import Title from './Title'
 import { BookUserIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
 const Testimonial = () => {
+    const { t } = useTranslation();
 
     const cardsData = [
         {
@@ -41,7 +43,7 @@ const Testimonial = () => {
                     <span className="text-xs text-slate-500">{card.handle}</span>
                 </div>
             </div>
-            <p className="text-sm py-4 text-gray-800">Radiant made undercutting all of our competitors an absolute breeze.</p>
+            <p className="text-sm py-4 text-gray-800">{t('testimonials.review')}</p>
         </div>
     );
 
@@ -51,9 +53,9 @@ const Testimonial = () => {
     <div id='testimonials' className='flex flex-col items-center my-10 scroll-mt-12'>
     <div className="flex items-center gap-2 text-sm text-green-600 bg-green-400/10 rounded-full px-6 py-1.5">
         <BookUserIcon className="size-4.5 stroke-green-600"/>
-        <span>Testimonials</span>
+        <span>{t('testimonials.badge')}</span>
     </div>
-    <Title title="Don't just take our words" description="Hear what our users say about us. We're always looking for ways to improve. If you have a positive experience with us, leave a review."/>
+    <Title title={t('testimonials.title')} description={t('testimonials.description')}/>
     </div>
     <div className="marquee-row w-full mx-auto max-w-5xl overflow-hidden relative">
         <div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent"></div>

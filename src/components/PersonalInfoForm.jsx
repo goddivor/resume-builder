@@ -1,7 +1,9 @@
 import { BriefcaseBusiness, Globe, Linkedin, Mail, MapPin, Phone, User, X } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground}) => {
+    const { t } = useTranslation();
 
     const handleChange = (field, value)=>{
         onChange({...data, [field]: value})
@@ -13,19 +15,19 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
     }
 
     const fields = [
-        {key: "full_name", label: "Full Name", icon: User, type: "text", required: true},
-        {key: "email", label: "Email Address", icon: Mail, type: "email", required: true},
-        { key: "phone", label: "Phone Number", icon: Phone, type: "tel" },
-        { key: "location", label: "Location", icon: MapPin, type: "text" },
-        { key: "profession", label: "Profession", icon: BriefcaseBusiness, type: "text" },
-        { key: "linkedin", label: "LinkedIn Profile", icon: Linkedin, type: "url" },
-        { key: "website", label: "Personal Website", icon: Globe, type: "url" }
+        {key: "full_name", label: t('forms.personalInfo.fullName'), icon: User, type: "text", required: true},
+        {key: "email", label: t('forms.personalInfo.email'), icon: Mail, type: "email", required: true},
+        { key: "phone", label: t('forms.personalInfo.phone'), icon: Phone, type: "tel" },
+        { key: "location", label: t('forms.personalInfo.location'), icon: MapPin, type: "text" },
+        { key: "profession", label: t('forms.personalInfo.profession'), icon: BriefcaseBusiness, type: "text" },
+        { key: "linkedin", label: t('forms.personalInfo.linkedin'), icon: Linkedin, type: "url" },
+        { key: "website", label: t('forms.personalInfo.website'), icon: Globe, type: "url" }
     ]
 
   return (
     <div>
-      <h3 className='text-lg font-semibold text-gray-900'>Personal Information</h3>
-      <p className='text-sm text-gray-600'>Get Started with the personal information</p>
+      <h3 className='text-lg font-semibold text-gray-900'>{t('forms.personalInfo.title')}</h3>
+      <p className='text-sm text-gray-600'>{t('forms.personalInfo.subtitle')}</p>
       <div className='flex items-center gap-2'>
         {data.image ? (
             <div className='relative group mt-5'>
@@ -40,13 +42,13 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
         ) : (
             <label className='inline-flex items-center gap-2 mt-5 text-slate-600 hover:text-slate-700 cursor-pointer'>
                 <User className='size-10 p-2.5 border rounded-full'/>
-                upload user image
+                {t('forms.personalInfo.uploadImage')}
                 <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=>handleChange("image", e.target.files[0])}/>
             </label>
         )}
         {typeof data.image === 'object' && (
             <div className='flex flex-col gap-1 pl-4 text-sm'>
-                <p>Remove Background</p>
+                <p>{t('forms.personalInfo.removeBackground')}</p>
                 <label className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
                     <input type="checkbox" className="sr-only peer" onChange={()=>setRemoveBackground(prev => !prev)} checked={removeBackground}/>
                     <div className='w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-green-600 transition-colors duration-200'>
@@ -66,7 +68,7 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
                     {field.label}
                     {field.required && <span className="text-red-500">*</span>}
                 </label>
-                <input type={field.type} value={data[field.key] || ""} onChange={(e)=>handleChange(field.key, e.target.value)} className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm' placeholder={`Enter your ${field.label.toLowerCase()}`} required={field.required}/>
+                <input type={field.type} value={data[field.key] || ""} onChange={(e)=>handleChange(field.key, e.target.value)} className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm' placeholder={`${t('forms.personalInfo.enterYour')} ${field.label.toLowerCase()}`} required={field.required}/>
             </div>
         )
     })}

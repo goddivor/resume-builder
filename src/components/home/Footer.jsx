@@ -1,43 +1,46 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <>
 
-<footer className="flex flex-wrap justify-center lg:justify-between overflow-hidden gap-10 md:gap-20 py-16 px-6 md:px-16 lg:px-24 xl:px-32 text-[13px] text-gray-500 bg-gradient-to-r from-white via-green-200/60 to-white mt-40">
-        <div className="flex flex-wrap items-start gap-10 md:gap-[60px] xl:gap-[140px]">
+<footer className="flex flex-wrap justify-center lg:justify-between overflow-hidden gap-10 md:gap-12 lg:gap-16 py-16 px-6 md:px-16 lg:px-24 xl:px-32 text-[13px] text-gray-500 bg-gradient-to-r from-white via-green-200/60 to-white mt-40">
+        <div className="flex flex-wrap items-start gap-10 md:gap-[60px] xl:gap-[100px]">
             <a href="#">
                 <img src="/logo.svg" alt="logo" className="h-11 w-auto" />
             </a>
             <div>
-                <p className="text-slate-800 font-semibold">Product</p>
+                <p className="text-slate-800 font-semibold">{t('footer.product')}</p>
                 <ul className="mt-2 space-y-2">
-                    <li><a href="/" className="hover:text-green-600 transition">Home</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Support</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Pricing</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Affiliate</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.home')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.support')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.pricing')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.affiliate')}</a></li>
                 </ul>
             </div>
             <div>
-                <p className="text-slate-800 font-semibold">Resources</p>
+                <p className="text-slate-800 font-semibold">{t('footer.resources')}</p>
                 <ul className="mt-2 space-y-2">
-                    <li><a href="/" className="hover:text-green-600 transition">Company</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Blogs</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Community</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Careers<span className="text-xs text-white bg-green-600 rounded-md ml-2 px-2 py-1">We’re hiring!</span></a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">About</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.company')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.blogs')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.community')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.careers')}<span className="text-xs text-white bg-green-600 rounded-md ml-2 px-2 py-1">{t('footer.hiring')}</span></a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.about')}</a></li>
                 </ul>
             </div>
             <div>
-                <p className="text-slate-800 font-semibold">Legal</p>
+                <p className="text-slate-800 font-semibold">{t('footer.legal')}</p>
                 <ul className="mt-2 space-y-2">
-                    <li><a href="/" className="hover:text-green-600 transition">Privacy</a></li>
-                    <li><a href="/" className="hover:text-green-600 transition">Terms</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.privacy')}</a></li>
+                    <li><a href="/" className="hover:text-green-600 transition">{t('footer.terms')}</a></li>
                 </ul>
             </div>
         </div>
-        <div className="flex flex-col max-md:items-center max-md:text-center gap-2 items-end">
-            <p className="max-w-60">Making every customer feel valued—no matter the size of your audience.</p>
+        <div className="flex flex-col max-md:items-center max-md:text-center gap-2 items-end w-full lg:w-auto lg:min-w-[300px] shrink-0">
+            <p className="max-w-xs">{t('footer.tagline')}</p>
             <div className="flex items-center gap-4 mt-3">
                 <a href="https://dribbble.com/" target="_blank" rel="noreferrer">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-dribbble size-5 hover:text-green-500" aria-hidden="true">
@@ -69,7 +72,7 @@ const Footer = () => {
                     </svg>
                 </a>
             </div>
-            <p className="mt-3 text-center">© 2025 Resume Builder</p>
+            <p className="mt-3 text-center">{t('footer.copyright')}</p>
         </div>
     </footer>
 

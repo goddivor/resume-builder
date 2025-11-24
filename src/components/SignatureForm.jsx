@@ -1,7 +1,9 @@
 import { Calendar, PenTool, X } from 'lucide-react'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 
 const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSignatureBackground}) => {
+    const { t } = useTranslation();
 
     const handleChange = (field, value)=>{
         onChange({...data, [field]: value})
@@ -14,8 +16,8 @@ const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSign
 
   return (
     <div>
-      <h3 className='text-lg font-semibold text-gray-900'>Signature</h3>
-      <p className='text-sm text-gray-600'>Add your signature and date (optional)</p>
+      <h3 className='text-lg font-semibold text-gray-900'>{t('forms.signature.title')}</h3>
+      <p className='text-sm text-gray-600'>{t('forms.signature.subtitle')}</p>
 
       <div className='flex items-center gap-2'>
         {data.image ? (
@@ -31,13 +33,13 @@ const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSign
         ) : (
             <label className='inline-flex items-center gap-2 mt-5 text-slate-600 hover:text-slate-700 cursor-pointer'>
                 <PenTool className='size-10 p-2.5 border rounded-full'/>
-                upload signature
+                {t('forms.signature.uploadSignature')}
                 <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=>handleChange("image", e.target.files[0])}/>
             </label>
         )}
         {typeof data.image === 'object' && (
             <div className='flex flex-col gap-1 pl-4 text-sm'>
-                <p>Remove Background</p>
+                <p>{t('forms.signature.removeBackground')}</p>
                 <label className='relative inline-flex items-center cursor-pointer text-gray-900 gap-3'>
                     <input type="checkbox" className="sr-only peer" onChange={()=>setRemoveSignatureBackground(prev => !prev)} checked={removeSignatureBackground}/>
                     <div className='w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-green-600 transition-colors duration-200'>
@@ -51,7 +53,7 @@ const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSign
       <div className='space-y-1 mt-5'>
         <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
             <Calendar className="size-4"/>
-            Date
+            {t('forms.signature.date')}
         </label>
         <input
             type="date"

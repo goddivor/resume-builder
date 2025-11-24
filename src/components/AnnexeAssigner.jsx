@@ -3,8 +3,10 @@ import { FileTextIcon, XIcon, LoaderCircleIcon, GripVerticalIcon, CheckIcon } fr
 import api from '../configs/api';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
+  const { t } = useTranslation();
   const { token } = useSelector(state => state.auth);
   const [allAnnexes, setAllAnnexes] = useState([]);
   const [selectedAnnexes, setSelectedAnnexes] = useState([]);
@@ -12,6 +14,7 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadData = async () => {
     setIsLoading(true);
     try {
@@ -40,7 +43,7 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
       setSelectedAnnexes(selectedAnnexes.filter(id => id !== annexeId));
     } else {
       if (selectedAnnexes.length >= 15) {
-        toast.error('Maximum 15 annexes allowed per resume');
+        toast.error(t('annexeAssigner.maxAnnexes'));
         return;
       }
       setSelectedAnnexes([...selectedAnnexes, annexeId]);
@@ -92,14 +95,14 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
     if (isOpen && resumeId) {
       loadData();
     }
-  }, [isOpen, resumeId]);
+  }, [isOpen, loadData, resumeId]);
 
   if (!isOpen) return null;
 
   return (
     <div onClick={onClose} className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-20 flex items-center justify-center'>
       <div onClick={e => e.stopPropagation()} className='relative bg-slate-50 border shadow-md rounded-lg w-full max-w-2xl p-6 max-h-[80vh] overflow-y-auto'>
-        <h2 className='text-xl font-bold mb-4'>Assign Annexes to Resume</h2>
+        <h2 className='text-xl font-bold mb-4'>{t('annexeAssigner.title')}</h2>
 
         {isLoading ? (
           <div className='flex items-center justify-center py-8'>
@@ -108,14 +111,14 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
         ) : (
           <>
             <p className='text-sm text-slate-600 mb-4'>
-              Select annexes to attach (max 15). Drag to reorder.
+              {t('annexeAssigner.instruction')}
             </p>
 
             {/* Selected Annexes - Draggable */}
             {selectedAnnexes.length > 0 && (
               <div className='mb-6'>
                 <h3 className='text-sm font-semibold text-slate-700 mb-2'>
-                  Selected Annexes ({selectedAnnexes.length}/15)
+                  {t('annexeAssigner.selectedAnnexes')} ({selectedAnnexes.length}/15)
                 </h3>
                 <div className='space-y-2'>
                   {selectedAnnexes.map((annexeId, index) => {
@@ -157,11 +160,11 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
             )}
 
             {/* Available Annexes */}
-            <h3 className='text-sm font-semibold text-slate-700 mb-2'>Available Annexes</h3>
+            <h3 className='text-sm font-semibold text-slate-700 mb-2'>{t('annexeAssigner.availableAnnexes')}</h3>
             {allAnnexes.length === 0 ? (
               <div className='text-center py-8 text-slate-500'>
                 <FileTextIcon className='size-12 mx-auto mb-2 text-slate-300' />
-                <p>No annexes available. Upload one first.</p>
+                <p>{t('annexeAssigner.noAnnexesAvailable')}</p>
               </div>
             ) : (
               <div className='space-y-2 mb-6'>
@@ -197,7 +200,7 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
                 onClick={onClose}
                 className='flex-1 py-2 border border-slate-300 text-slate-700 rounded hover:bg-slate-100 transition-colors'
               >
-                Cancel
+                {t('annexeAssigner.cancel')}
               </button>
               <button
                 onClick={saveAssignments}
@@ -205,7 +208,7 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
                 className='flex-1 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center justify-center gap-2'
               >
                 {isSaving && <LoaderCircleIcon className='animate-spin size-4' />}
-                {isSaving ? 'Saving...' : 'Save Assignments'}
+                {isSaving ? t('annexeAssigner.saving') : t('annexeAssigner.saveButton')}
               </button>
             </div>
           </>

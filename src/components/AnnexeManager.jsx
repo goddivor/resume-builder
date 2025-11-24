@@ -3,12 +3,15 @@ import { FileTextIcon, TrashIcon, XIcon, LoaderCircleIcon } from 'lucide-react';
 import api from '../configs/api';
 import toast from 'react-hot-toast';
 import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 
 const AnnexeManager = ({ isOpen, onClose }) => {
+  const { t } = useTranslation();
   const { token } = useSelector(state => state.auth);
   const [annexes, setAnnexes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const loadAnnexes = async () => {
     setIsLoading(true);
     try {
@@ -24,7 +27,7 @@ const AnnexeManager = ({ isOpen, onClose }) => {
 
   const deleteAnnexe = async (annexeId) => {
     try {
-      const confirm = window.confirm('Are you sure you want to delete this annexe?');
+      const confirm = window.confirm(t('annexeManager.deleteConfirm'));
       if (confirm) {
         const { data } = await api.delete(`/api/annexes/delete/${annexeId}`, {
           headers: { Authorization: token }
@@ -49,14 +52,14 @@ const AnnexeManager = ({ isOpen, onClose }) => {
     if (isOpen) {
       loadAnnexes();
     }
-  }, [isOpen]);
+  }, [isOpen, loadAnnexes]);
 
   if (!isOpen) return null;
 
   return (
     <div onClick={onClose} className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-10 flex items-center justify-center'>
       <div onClick={e => e.stopPropagation()} className='relative bg-slate-50 border shadow-md rounded-lg w-full max-w-2xl p-6 max-h-[80vh] overflow-y-auto'>
-        <h2 className='text-xl font-bold mb-4'>Manage Annexes</h2>
+        <h2 className='text-xl font-bold mb-4'>{t('annexeManager.title')}</h2>
 
         {isLoading ? (
           <div className='flex items-center justify-center py-8'>
@@ -65,7 +68,7 @@ const AnnexeManager = ({ isOpen, onClose }) => {
         ) : annexes.length === 0 ? (
           <div className='text-center py-8 text-slate-500'>
             <FileTextIcon className='size-12 mx-auto mb-2 text-slate-300' />
-            <p>No annexes uploaded yet</p>
+            <p>{t('annexeManager.noAnnexes')}</p>
           </div>
         ) : (
           <div className='space-y-3'>
@@ -79,7 +82,7 @@ const AnnexeManager = ({ isOpen, onClose }) => {
                       {annexe.fileName} • {formatFileSize(annexe.fileSize)}
                     </p>
                     <p className='text-xs text-slate-400'>
-                      Uploaded on {new Date(annexe.createdAt).toLocaleDateString()}
+                      {t('annexeManager.uploadedOn')} {new Date(annexe.createdAt).toLocaleDateString()}
                     </p>
                   </div>
                 </div>

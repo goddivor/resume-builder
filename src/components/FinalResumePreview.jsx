@@ -2,13 +2,15 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
+import { useTranslation } from 'react-i18next';
 import ResumePreview from './ResumePreview';
 import AnnexePage from './AnnexePage';
 
 // Configure PDF.js worker
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
+const FinalResumePreview = ({ resumeData, annexes, template, accentColor, language }) => {
+  const { t } = useTranslation();
   const [numPages, setNumPages] = useState({});
 
   const onDocumentLoadSuccess = useCallback((annexeId, { numPages }) => {
@@ -37,6 +39,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
           data={resumeData}
           template={template}
           accentColor={accentColor}
+          language={language}
           classes='py-4'
         />
       </div>
@@ -56,10 +59,10 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
                 <Document
                   file={annexeUrl.file}
                   onLoadSuccess={({ numPages }) => onDocumentLoadSuccess(annexeUrl.id, { numPages })}
-                  loading={<div className='p-8 text-center text-slate-500'>Loading PDF...</div>}
+                  loading={<div className='p-8 text-center text-slate-500'>{t('previewFinal.loadingPDF')}</div>}
                   error={(error) => (
                     <div className='p-8 text-center'>
-                      <p className='text-red-500'>Failed to load PDF</p>
+                      <p className='text-red-500'>{t('previewFinal.failedToLoadPDF')}</p>
                       <p className='text-sm text-slate-500 mt-2'>{error?.message}</p>
                     </div>
                   )}
@@ -86,7 +89,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor }) => {
       {/* Message if no annexes */}
       {(!annexes || annexes.length === 0) && (
         <div className='bg-slate-100 border-2 border-dashed border-slate-300 rounded-lg p-8 text-center'>
-          <p className='text-slate-500'>No annexes assigned to this resume</p>
+          <p className='text-slate-500'>{t('previewFinal.noAnnexesAssigned')}</p>
         </div>
       )}
     </div>

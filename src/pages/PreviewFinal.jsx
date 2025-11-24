@@ -9,8 +9,10 @@ import ColorPicker from '../components/ColorPicker';
 import { ArrowLeftIcon, DownloadIcon, Share2Icon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PDFDocument } from 'pdf-lib';
+import { useTranslation } from 'react-i18next';
 
 const PreviewFinal = () => {
+  const { t, i18n } = useTranslation();
   const { resumeId } = useParams();
   const navigate = useNavigate();
   const { token } = useSelector(state => state.auth);
@@ -81,7 +83,7 @@ const PreviewFinal = () => {
     setIsDownloading(true);
     let toastId;
     try {
-      toastId = toast.loading('Generating complete PDF...');
+      toastId = toast.loading(t('previewFinal.generatingCompletePDF'));
 
       // 1. Créer un PDF merger
       const mergedPdf = await PDFDocument.create();
@@ -119,7 +121,7 @@ const PreviewFinal = () => {
       // 3. Ajouter la page "ANNEXES" si il y a des annexes
       if (annexes && annexes.length > 0) {
         const annexePage = mergedPdf.addPage([595.28, 841.89]); // A4 size in points
-        annexePage.drawText('ANNEXES', {
+        annexePage.drawText(t('previewFinal.annexes'), {
           x: 220,
           y: 420,
           size: 48,
@@ -151,11 +153,11 @@ const PreviewFinal = () => {
       window.URL.revokeObjectURL(url);
 
       toast.dismiss(toastId);
-      toast.success('PDF downloaded successfully!');
+      toast.success(t('previewFinal.pdfDownloadSuccess'));
     } catch (error) {
       console.error('Error generating PDF:', error);
       if (toastId) toast.dismiss(toastId);
-      toast.error('Failed to generate PDF');
+      toast.error(t('previewFinal.pdfDownloadError'));
     }
     setIsDownloading(false);
   };
@@ -172,11 +174,11 @@ const PreviewFinal = () => {
           text: 'Check out my resume',
           url: resumeUrl
         });
-        toast.success('Shared successfully!');
+        toast.success(t('previewFinal.sharedSuccess'));
       } else {
         // Fallback to clipboard
         await navigator.clipboard.writeText(resumeUrl);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('previewFinal.linkCopied'));
       }
     } catch (error) {
       // If both fail, use clipboard as final fallback
@@ -187,10 +189,11 @@ const PreviewFinal = () => {
 
       try {
         await navigator.clipboard.writeText(resumeUrl);
-        toast.success('Link copied to clipboard!');
+        toast.success(t('previewFinal.linkCopied'));
+      // eslint-disable-next-line no-unused-vars
       } catch (clipboardError) {
         // Last resort: show URL in prompt
-        prompt('Copy this link to share your resume:', resumeUrl);
+        prompt(t('previewFinal.copyLinkPrompt'), resumeUrl);
       }
     }
   };
@@ -199,6 +202,7 @@ const PreviewFinal = () => {
     if (resumeId) {
       loadResumeWithAnnexes();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resumeId]);
 
   if (isLoading) {
@@ -208,13 +212,13 @@ const PreviewFinal = () => {
   if (!resumeData) {
     return (
       <div className='flex flex-col items-center justify-center h-screen'>
-        <p className='text-center text-6xl text-slate-400 font-medium'>Resume not found</p>
+        <p className='text-center text-6xl text-slate-400 font-medium'>{t('previewFinal.resumeNotFound')}</p>
         <button
           onClick={() => navigate('/app')}
           className='mt-6 bg-green-500 hover:bg-green-600 text-white rounded-full px-6 h-9 m-1 ring-offset-1 ring-1 ring-green-400 flex items-center transition-colors'
         >
           <ArrowLeftIcon className='mr-2 size-4' />
-          Back to Dashboard
+          {t('previewFinal.backToDashboard')}
         </button>
       </div>
     );
@@ -229,22 +233,22 @@ const PreviewFinal = () => {
           className='flex items-center gap-2 text-slate-600 hover:text-slate-800 mb-6 transition-colors'
         >
           <ArrowLeftIcon className='size-4' />
-          <span>Back to Dashboard</span>
+          <span>{t('previewFinal.backToDashboard')}</span>
         </button>
 
-        <h2 className='text-lg font-bold text-slate-800 mb-4'>Final Preview</h2>
+        <h2 className='text-lg font-bold text-slate-800 mb-4'>{t('previewFinal.finalPreview')}</h2>
         <p className='text-sm text-slate-600 mb-6'>
-          Customize template and color. Content is locked.
+          {t('previewFinal.customizeInfo')}
         </p>
 
         <div className='space-y-6'>
           <div>
-            <h3 className='text-sm font-semibold text-slate-700 mb-3'>Template</h3>
+            <h3 className='text-sm font-semibold text-slate-700 mb-3'>{t('previewFinal.template')}</h3>
             <TemplateSelector selectedTemplate={template} onChange={handleTemplateChange} />
           </div>
 
           <div>
-            <h3 className='text-sm font-semibold text-slate-700 mb-3'>Accent Color</h3>
+            <h3 className='text-sm font-semibold text-slate-700 mb-3'>{t('previewFinal.accentColor')}</h3>
             <ColorPicker selectedColor={accentColor} onChange={handleColorChange} />
           </div>
 
@@ -255,7 +259,7 @@ const PreviewFinal = () => {
                 className='w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors'
               >
                 <Share2Icon className='size-4' />
-                Share Resume
+                {t('previewFinal.shareResume')}
               </button>
             )}
             <button
@@ -264,7 +268,7 @@ const PreviewFinal = () => {
               className='w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-slate-400 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg transition-colors'
             >
               <DownloadIcon className='size-4' />
-              {isDownloading ? 'Generating PDF...' : 'Download PDF'}
+              {isDownloading ? t('previewFinal.generatingPDF') : t('previewFinal.downloadPDF')}
             </button>
           </div>
         </div>
@@ -278,6 +282,7 @@ const PreviewFinal = () => {
             annexes={annexes}
             template={template}
             accentColor={accentColor}
+            language={i18n.language}
           />
         </div>
       </div>
