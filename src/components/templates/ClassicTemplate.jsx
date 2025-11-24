@@ -5,11 +5,18 @@ const ClassicTemplate = ({ data, accentColor, showImage = true, language = "en" 
     const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
-        const [year, month] = dateStr.split("-");
-        return new Date(year, month - 1).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short"
-        });
+
+        // Check if date contains month (yyyy-mm format)
+        if (dateStr.includes("-")) {
+            const [year, month] = dateStr.split("-");
+            return new Date(year, month - 1).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short"
+            });
+        }
+
+        // Just year (yyyy format)
+        return dateStr;
     };
 
     return (
@@ -179,7 +186,7 @@ const ClassicTemplate = ({ data, accentColor, showImage = true, language = "en" 
                                     {edu.gpa && <p className="text-sm text-gray-600">GPA: {edu.gpa}</p>}
                                 </div>
                                 <div className="text-sm text-gray-600">
-                                    <p>{formatDate(edu.graduation_date)}</p>
+                                    <p>{edu.is_current ? t.present : formatDate(edu.graduation_date)}</p>
                                 </div>
                             </div>
                         ))}
@@ -200,6 +207,62 @@ const ClassicTemplate = ({ data, accentColor, showImage = true, language = "en" 
                                 • {skill}
                             </div>
                         ))}
+                    </div>
+                </section>
+            )}
+
+            {/* Languages */}
+            {data.languages && data.languages.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
+                        {t.languages}
+                    </h2>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+                        {data.languages.map((lang, index) => {
+                            const getProficiencyLevel = (proficiency) => {
+                                if (proficiency >= 90) return t.native;
+                                if (proficiency >= 70) return t.fluent;
+                                if (proficiency >= 50) return t.intermediate;
+                                if (proficiency >= 30) return t.basic;
+                                return t.beginner;
+                            };
+
+                            return (
+                                <div key={index} className="flex flex-col items-center">
+                                    <div className="relative w-20 h-20 mb-3">
+                                        <svg className="w-20 h-20 transform -rotate-90">
+                                            <circle
+                                                cx="40"
+                                                cy="40"
+                                                r="32"
+                                                stroke="#e5e7eb"
+                                                strokeWidth="6"
+                                                fill="none"
+                                            />
+                                            <circle
+                                                cx="40"
+                                                cy="40"
+                                                r="32"
+                                                stroke={accentColor}
+                                                strokeWidth="6"
+                                                fill="none"
+                                                strokeDasharray={`${2 * Math.PI * 32}`}
+                                                strokeDashoffset={`${2 * Math.PI * 32 * (1 - lang.proficiency / 100)}`}
+                                                strokeLinecap="round"
+                                            />
+                                        </svg>
+                                        <div className="absolute inset-0 flex items-center justify-center">
+                                            <span className="text-sm font-semibold text-gray-700">
+                                                {lang.proficiency}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <h4 className="font-medium text-gray-900 text-center">{lang.name}</h4>
+                                    <p className="text-xs text-gray-600">{getProficiencyLevel(lang.proficiency)}</p>
+                                </div>
+                            );
+                        })}
                     </div>
                 </section>
             )}

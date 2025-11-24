@@ -5,11 +5,18 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
     const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
-        const [year, month] = dateStr.split("-");
-        return new Date(year, month - 1).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-        });
+
+        // Check if date contains month (yyyy-mm format)
+        if (dateStr.includes("-")) {
+            const [year, month] = dateStr.split("-");
+            return new Date(year, month - 1).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+            });
+        }
+
+        // Just year (yyyy format)
+        return dateStr;
     };
 
     return (
@@ -84,7 +91,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
                                         <p className="font-semibold uppercase">{edu.degree}</p>
                                         <p className="text-zinc-600">{edu.institution}</p>
                                         <p className="text-xs text-zinc-500">
-                                            {formatDate(edu.graduation_date)}
+                                            {edu.is_current ? t.present : formatDate(edu.graduation_date)}
                                         </p>
                                     </div>
                                 ))}
@@ -94,7 +101,7 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
 
                     {/* Skills */}
                     {data.skills && data.skills.length > 0 && (
-                        <section>
+                        <section className="mb-8">
                             <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
                                 {t.skills}
                             </h2>
@@ -103,6 +110,42 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
                                     <li key={index}>{skill}</li>
                                 ))}
                             </ul>
+                        </section>
+                    )}
+
+                    {/* Languages */}
+                    {data.languages && data.languages.length > 0 && (
+                        <section>
+                            <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
+                                {t.languages}
+                            </h2>
+                            <div className="space-y-3 text-sm">
+                                {data.languages.map((lang, index) => {
+                                    const getProficiencyLevel = (proficiency) => {
+                                        if (proficiency >= 90) return t.native;
+                                        if (proficiency >= 70) return t.fluent;
+                                        if (proficiency >= 50) return t.intermediate;
+                                        if (proficiency >= 30) return t.basic;
+                                        return t.beginner;
+                                    };
+
+                                    return (
+                                        <div key={index}>
+                                            <div className="flex justify-between items-center mb-1">
+                                                <span className="font-medium">{lang.name}</span>
+                                                <span className="text-xs text-zinc-500">{lang.proficiency}%</span>
+                                            </div>
+                                            <div className="w-full bg-zinc-200 rounded-full h-1.5">
+                                                <div
+                                                    className="h-1.5 rounded-full transition-all"
+                                                    style={{ width: `${lang.proficiency}%`, backgroundColor: accentColor }}
+                                                ></div>
+                                            </div>
+                                            <p className="text-xs text-zinc-500 mt-0.5">{getProficiencyLevel(lang.proficiency)}</p>
+                                        </div>
+                                    );
+                                })}
+                            </div>
                         </section>
                     )}
                 </aside>

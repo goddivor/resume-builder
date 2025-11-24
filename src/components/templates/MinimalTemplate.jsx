@@ -4,11 +4,18 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
     const t = translations[language];
     const formatDate = (dateStr) => {
         if (!dateStr) return "";
-        const [year, month] = dateStr.split("-");
-        return new Date(year, month - 1).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short"
-        });
+
+        // Check if date contains month (yyyy-mm format)
+        if (dateStr.includes("-")) {
+            const [year, month] = dateStr.split("-");
+            return new Date(year, month - 1).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short"
+            });
+        }
+
+        // Just year (yyyy format)
+        return dateStr;
     };
 
     return (
@@ -148,7 +155,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
                                     {edu.gpa && <p className="text-sm text-gray-500">GPA: {edu.gpa}</p>}
                                 </div>
                                 <span className="text-sm text-gray-500">
-                                    {formatDate(edu.graduation_date)}
+                                    {edu.is_current ? t.present : formatDate(edu.graduation_date)}
                                 </span>
                             </div>
                         ))}
@@ -158,13 +165,40 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
 
             {/* Skills */}
             {data.skills && data.skills.length > 0 && (
-                <section>
+                <section className="mb-10">
                     <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
                         {t.skills}
                     </h2>
 
                     <div className="text-gray-700">
                         {data.skills.join(" • ")}
+                    </div>
+                </section>
+            )}
+
+            {/* Languages */}
+            {data.languages && data.languages.length > 0 && (
+                <section className="mb-10">
+                    <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
+                        {t.languages}
+                    </h2>
+
+                    <div className="space-y-2 text-gray-700">
+                        {data.languages.map((lang, index) => {
+                            const getProficiencyLevel = (proficiency) => {
+                                if (proficiency >= 90) return t.native;
+                                if (proficiency >= 70) return t.fluent;
+                                if (proficiency >= 50) return t.intermediate;
+                                if (proficiency >= 30) return t.basic;
+                                return t.beginner;
+                            };
+
+                            return (
+                                <p key={index}>
+                                    <span className="font-medium">{lang.name}</span>: {getProficiencyLevel(lang.proficiency)}
+                                </p>
+                            );
+                        })}
                     </div>
                 </section>
             )}

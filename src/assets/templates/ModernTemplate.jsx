@@ -3,13 +3,22 @@ import { translations } from "../../utils/translations";
 
 const ModernTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
 	const t = translations[language];
+    const formatDate = (dateStr) => {
+        if (!dateStr) return "";
+
+        // Check if date contains month (yyyy-mm format)
+        if (dateStr.includes("-")) {
+            const [year, month] = dateStr.split("-");
+            return new Date(year, month - 1).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short"
+            });
+        }
+
+        // Just year (yyyy format)
+        return dateStr;
+    };
 	const formatDate = (dateStr) => {
-		if (!dateStr) return "";
-		const [year, month] = dateStr.split("-");
-		return new Date(year, month - 1).toLocaleDateString("en-US", {
-			year: "numeric",
-			month: "short"
-		});
 	};
 
 	return (
