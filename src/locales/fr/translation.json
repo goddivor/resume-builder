@@ -173,6 +173,7 @@
       "projects": "Projets",
       "publications": "Publications",
       "skills": "Compétences",
+      "interests": "Centres d'intérêt",
       "languages": "Langues",
       "signature": "Signature"
     }
@@ -256,6 +257,15 @@
       "noSkills": "Aucune compétence ajoutée pour le moment.",
       "getStarted": "Ajoutez vos compétences techniques et transversales ci-dessus.",
       "tip": "Conseil : Ajoutez 8 à 12 compétences pertinentes. Incluez à la fois des compétences techniques (langages de programmation, outils) et des compétences transversales (leadership, communication)."
+    },
+    "interests": {
+      "title": "Centres d'intérêt et loisirs",
+      "subtitle": "Ajoutez vos centres d'intérêt et loisirs personnels",
+      "placeholder": "Entrez un centre d'intérêt (ex : Photographie, Randonnée, Lecture)",
+      "add": "Ajouter",
+      "noInterests": "Aucun centre d'intérêt ajouté pour le moment.",
+      "getStarted": "Ajoutez vos centres d'intérêt et loisirs personnels ci-dessus.",
+      "tip": "Conseil : Partagez des intérêts qui démontrent des compétences transférables ou une adéquation culturelle. Exemples : Sports d'équipe (travail d'équipe), Blog (communication), Open source (collaboration)."
     },
     "signature": {
       "title": "Signature",

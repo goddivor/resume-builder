@@ -113,6 +113,20 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
                         </section>
                     )}
 
+                    {/* Interests */}
+                    {data.interests && data.interests.length > 0 && (
+                        <section className="mb-8">
+                            <h2 className="text-sm font-semibold tracking-widest text-zinc-600 mb-3">
+                                {t.interests}
+                            </h2>
+                            <ul className="space-y-1 text-sm">
+                                {data.interests.map((interest, index) => (
+                                    <li key={index}>{interest}</li>
+                                ))}
+                            </ul>
+                        </section>
+                    )}
+
                     {/* Languages */}
                     {data.languages && data.languages.length > 0 && (
                         <section>

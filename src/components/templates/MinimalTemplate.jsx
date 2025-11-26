@@ -176,6 +176,19 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
                 </section>
             )}
 
+            {/* Interests */}
+            {data.interests && data.interests.length > 0 && (
+                <section className="mb-10">
+                    <h2 className="text-sm uppercase tracking-widest mb-6 font-medium" style={{ color: accentColor }}>
+                        {t.interests}
+                    </h2>
+
+                    <div className="text-gray-700">
+                        {data.interests.join(" • ")}
+                    </div>
+                </section>
+            )}
+
             {/* Languages */}
             {data.languages && data.languages.length > 0 && (
                 <section className="mb-10">

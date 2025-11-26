@@ -211,6 +211,23 @@ const ClassicTemplate = ({ data, accentColor, showImage = true, language = "en" 
                 </section>
             )}
 
+            {/* Interests */}
+            {data.interests && data.interests.length > 0 && (
+                <section className="mb-6">
+                    <h2 className="text-xl font-semibold mb-4" style={{ color: accentColor }}>
+                        {t.interests}
+                    </h2>
+
+                    <div className="flex gap-4 flex-wrap">
+                        {data.interests.map((interest, index) => (
+                            <div key={index} className="text-gray-700">
+                                • {interest}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
             {/* Languages */}
             {data.languages && data.languages.length > 0 && (
                 <section className="mb-6">

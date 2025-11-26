@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, Globe2, GraduationCap, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, Globe2, GraduationCap, Heart, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -10,6 +10,7 @@ import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
 import ProjectForm from '../components/ProjectForm'
 import SkillsForm from '../components/SkillsForm'
+import InterestsForm from '../components/InterestsForm'
 import PublicationForm from '../components/PublicationForm'
 import LanguagesForm from '../components/LanguagesForm'
 import SignatureForm from '../components/SignatureForm'
@@ -33,6 +34,7 @@ const ResumeBuilder = () => {
     project: [],
     publication: [],
     skills: [],
+    interests: [],
     languages: [],
     signature: {},
     template: "classic",
@@ -68,6 +70,7 @@ const ResumeBuilder = () => {
     { id: "projects", name: t('resumeBuilder.sections.projects'), icon: FolderIcon },
     { id: "publications", name: t('resumeBuilder.sections.publications'), icon: BookOpen },
     { id: "skills", name: t('resumeBuilder.sections.skills'), icon: Sparkles },
+    { id: "interests", name: t('resumeBuilder.sections.interests'), icon: Heart },
     { id: "languages", name: t('resumeBuilder.sections.languages'), icon: Globe2 },
     { id: "signature", name: t('resumeBuilder.sections.signature'), icon: PenTool },
   ]
@@ -154,7 +157,8 @@ const ResumeBuilder = () => {
         education: resumeData.education,
         project: resumeData.project,
         publication: resumeData.publication,
-        skills: resumeData.skills
+        skills: resumeData.skills,
+        interests: resumeData.interests
       };
 
       const { data } = await api.post('/api/ai/translate', {
@@ -289,6 +293,9 @@ const saveResume = async () => {
                   )}
                   {activeSection.id === 'skills' && (
                     <SkillsForm data={resumeData.skills} onChange={(data)=> setResumeData(prev=> ({...prev, skills: data}))}/>
+                  )}
+                  {activeSection.id === 'interests' && (
+                    <InterestsForm data={resumeData.interests} onChange={(data)=> setResumeData(prev=> ({...prev, interests: data}))}/>
                   )}
                   {activeSection.id === 'languages' && (
                     <LanguagesForm data={resumeData.languages} onChange={(data)=> setResumeData(prev=> ({...prev, languages: data}))}/>

@@ -224,6 +224,27 @@ const ModernTemplate = ({ data, accentColor, showImage = true, language = "en" }
 							</section>
 						)}
 
+						{/* Interests */}
+						{data.interests && data.interests.length > 0 && (
+							<section>
+								<h2 className="text-2xl font-light mb-4 pb-2 border-b border-gray-200">
+									{t.interests}
+								</h2>
+
+								<div className="flex flex-wrap gap-2">
+									{data.interests.map((interest, index) => (
+										<span
+											key={index}
+											className="px-3 py-1 text-sm text-white rounded-full"
+											style={{ backgroundColor: accentColor }}
+										>
+											{interest}
+										</span>
+									))}
+								</div>
+							</section>
+						)}
+
 						{/* Languages */}
 						{data.languages && data.languages.length > 0 && (
 							<section>
