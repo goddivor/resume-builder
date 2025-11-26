@@ -11,20 +11,6 @@ const AnnexeManager = ({ isOpen, onClose }) => {
   const [annexes, setAnnexes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const loadAnnexes = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await api.get('/api/annexes/list', {
-        headers: { Authorization: token }
-      });
-      setAnnexes(data.annexes);
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
-    }
-    setIsLoading(false);
-  };
-
   const deleteAnnexe = async (annexeId) => {
     try {
       const confirm = window.confirm(t('annexeManager.deleteConfirm'));
@@ -49,10 +35,24 @@ const AnnexeManager = ({ isOpen, onClose }) => {
   };
 
   useEffect(() => {
+    const loadAnnexes = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await api.get('/api/annexes/list', {
+          headers: { Authorization: token }
+        });
+        setAnnexes(data.annexes);
+      } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
+      }
+      setIsLoading(false);
+    };
+
     if (isOpen) {
       loadAnnexes();
     }
-  }, [isOpen, loadAnnexes]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen]);
 
   if (!isOpen) return null;
 

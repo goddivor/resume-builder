@@ -14,30 +14,6 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const loadData = async () => {
-    setIsLoading(true);
-    try {
-      // Load all user annexes
-      const annexesRes = await api.get('/api/annexes/list', {
-        headers: { Authorization: token }
-      });
-      setAllAnnexes(annexesRes.data.annexes);
-
-      // Load current resume to get assigned annexes
-      const resumeRes = await api.get(`/api/resumes/get/${resumeId}`, {
-        headers: { Authorization: token }
-      });
-
-      if (resumeRes.data.resume.annexes && resumeRes.data.resume.annexes.length > 0) {
-        setSelectedAnnexes(resumeRes.data.resume.annexes.map(a => a.annexeId));
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message || error.message);
-    }
-    setIsLoading(false);
-  };
-
   const toggleAnnexe = (annexeId) => {
     if (selectedAnnexes.includes(annexeId)) {
       setSelectedAnnexes(selectedAnnexes.filter(id => id !== annexeId));
@@ -92,10 +68,34 @@ const AnnexeAssigner = ({ isOpen, onClose, resumeId }) => {
   };
 
   useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      try {
+        // Load all user annexes
+        const annexesRes = await api.get('/api/annexes/list', {
+          headers: { Authorization: token }
+        });
+        setAllAnnexes(annexesRes.data.annexes);
+
+        // Load current resume to get assigned annexes
+        const resumeRes = await api.get(`/api/resumes/get/${resumeId}`, {
+          headers: { Authorization: token }
+        });
+
+        if (resumeRes.data.resume.annexes && resumeRes.data.resume.annexes.length > 0) {
+          setSelectedAnnexes(resumeRes.data.resume.annexes.map(a => a.annexeId));
+        }
+      } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
+      }
+      setIsLoading(false);
+    };
+
     if (isOpen && resumeId) {
       loadData();
     }
-  }, [isOpen, loadData, resumeId]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, resumeId]);
 
   if (!isOpen) return null;
 
