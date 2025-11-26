@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, Globe2, GraduationCap, Heart, ImageIcon, Languages, PenTool, Share2Icon, Sparkles, User } from 'lucide-react'
+import { ArrowLeftIcon, BookOpen, Briefcase, ChevronLeft, ChevronRight, DownloadIcon, EyeIcon, EyeOffIcon, FileText, FolderIcon, Globe2, GraduationCap, Heart, ImageIcon, Languages, Link2, PenTool, Share2Icon, Sparkles, User, X } from 'lucide-react'
 import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
@@ -61,6 +61,8 @@ const ResumeBuilder = () => {
   const [language, setLanguage] = useState('en');
   const [originalData, setOriginalData] = useState(null);
   const [isTranslating, setIsTranslating] = useState(false);
+  const [showSlugModal, setShowSlugModal] = useState(false);
+  const [customSlug, setCustomSlug] = useState('');
 
   const sections = [
     { id: "personal", name: t('resumeBuilder.sections.personal'), icon: User },
@@ -99,7 +101,9 @@ const ResumeBuilder = () => {
 
   const handleShare = async () => {
     const frontendUrl = window.location.href.split('/app/')[0];
-    const resumeUrl = frontendUrl + '/view/' + resumeId;
+    // Use slug if available, otherwise use resumeId
+    const identifier = resumeData.slug || resumeId;
+    const resumeUrl = frontendUrl + '/view/' + identifier;
 
     try {
       // Try Web Share API first
@@ -130,6 +134,36 @@ const ResumeBuilder = () => {
         // Last resort: show URL in prompt
         prompt(t('resumeBuilder.copyLinkPrompt'), resumeUrl);
       }
+    }
+  }
+
+  const handleCustomizeSlug = () => {
+    setCustomSlug(resumeData.slug || '');
+    setShowSlugModal(true);
+  }
+
+  const saveCustomSlug = async () => {
+    try {
+      const slugValue = customSlug.trim().toLowerCase();
+
+      // Validate slug format
+      const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+      if (slugValue && !slugRegex.test(slugValue)) {
+        toast.error(t('resumeBuilder.invalidSlugFormat'));
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("resumeId", resumeId);
+      formData.append('resumeData', JSON.stringify({ slug: slugValue || null }));
+
+      const { data } = await api.put('/api/resumes/update', formData, {headers: { Authorization: token }});
+
+      setResumeData(prev => ({ ...prev, slug: data.resume.slug }));
+      setShowSlugModal(false);
+      toast.success(t('resumeBuilder.slugSaved'));
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
     }
   }
 
@@ -333,9 +367,14 @@ const saveResume = async () => {
                       </button>
                     </div>
                     {resumeData.public && (
-                      <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
-                        <Share2Icon className='size-4'/> {t('resumeBuilder.share')}
-                      </button>
+                      <>
+                        <button onClick={handleCustomizeSlug} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-cyan-100 to-cyan-200 text-cyan-600 rounded-lg ring-cyan-300 hover:ring transition-colors'>
+                          <Link2 className='size-4'/> {t('resumeBuilder.customizeUrl')}
+                        </button>
+                        <button onClick={handleShare} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-200 text-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
+                          <Share2Icon className='size-4'/> {t('resumeBuilder.share')}
+                        </button>
+                      </>
                     )}
                     <button onClick={changeResumeVisibility} className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-purple-100 to-purple-200 text-purple-600 ring-purple-300 rounded-lg hover:ring transition-colors'>
                       {resumeData.public ? <EyeIcon className="size-4"/> : <EyeOffIcon className="size-4"/>}
@@ -351,7 +390,68 @@ const saveResume = async () => {
           </div>
         </div>
       </div>
-      
+
+      {/* Custom Slug Modal */}
+      {showSlugModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6 relative">
+            <button
+              onClick={() => setShowSlugModal(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <X className="size-5 text-gray-500" />
+            </button>
+
+            <div className="mb-6">
+              <h2 className="text-xl font-bold text-gray-900 mb-2">
+                {t('resumeBuilder.customizeUrlTitle')}
+              </h2>
+              <p className="text-sm text-gray-600">
+                {t('resumeBuilder.customizeUrlDescription')}
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t('resumeBuilder.customSlugLabel')}
+                </label>
+                <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                  <span className="text-sm text-gray-500 flex-shrink-0">
+                    {window.location.origin}/view/
+                  </span>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) => setCustomSlug(e.target.value)}
+                    placeholder="john-doe-resume"
+                    className="flex-1 bg-transparent border-none focus:outline-none text-sm font-medium text-gray-900"
+                  />
+                </div>
+                <p className="mt-2 text-xs text-gray-500">
+                  {t('resumeBuilder.slugFormatHint')}
+                </p>
+              </div>
+
+              <div className="flex gap-3 pt-4">
+                <button
+                  onClick={() => setShowSlugModal(false)}
+                  className="flex-1 px-4 py-2.5 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+                >
+                  {t('resumeBuilder.cancel')}
+                </button>
+                <button
+                  onClick={saveCustomSlug}
+                  className="flex-1 px-4 py-2.5 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-600 text-white font-medium hover:from-cyan-600 hover:to-cyan-700 transition-colors"
+                >
+                  {t('resumeBuilder.saveSlug')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }
