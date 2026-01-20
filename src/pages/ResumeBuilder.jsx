@@ -5,6 +5,7 @@ import PersonalInfoForm from '../components/PersonalInfoForm'
 import ResumePreview from '../components/ResumePreview'
 import TemplateSelector from '../components/TemplateSelector'
 import ColorPicker from '../components/ColorPicker'
+import SidebarColorPicker from '../components/SidebarColorPicker'
 import ProfessionalSummaryForm from '../components/ProfessionalSummaryForm'
 import ExperienceForm from '../components/ExperienceForm'
 import EducationForm from '../components/EducationForm'
@@ -271,6 +272,21 @@ const saveResume = async () => {
                 <div className='flex items-center gap-2'>
                   <TemplateSelector selectedTemplate={resumeData.template} onChange={(template)=> setResumeData(prev => ({...prev, template}))}/>
                   <ColorPicker selectedColor={resumeData.accent_color} onChange={(color)=>setResumeData(prev => ({...prev, accent_color: color}))}/>
+                  {resumeData.template === 'professional-sidebar' && (
+                    <SidebarColorPicker
+                      selectedColor={resumeData.template_settings?.['professional-sidebar']?.sidebar_color || '#4a4a4a'}
+                      onChange={(color) => setResumeData(prev => ({
+                        ...prev,
+                        template_settings: {
+                          ...prev.template_settings,
+                          'professional-sidebar': {
+                            ...prev.template_settings?.['professional-sidebar'],
+                            sidebar_color: color
+                          }
+                        }
+                      }))}
+                    />
+                  )}
                   <label className='flex items-center gap-1.5 px-2 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 cursor-pointer transition-colors text-xs text-gray-700' title={t('resumeBuilder.showImage')}>
                     <input
                       type="checkbox"

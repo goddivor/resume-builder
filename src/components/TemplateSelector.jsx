@@ -20,10 +20,20 @@ const TemplateSelector = ({ selectedTemplate, onChange }) => {
             name: "Minimal Image",
             preview: "Minimal design with a single image and clean typography"
         },
-            {
+        {
             id: "minimal",
             name: "Minimal",
             preview: "Ultra-clean design that puts your content front and center"
+        },
+        {
+            id: "professional-sidebar",
+            name: "Professional Sidebar",
+            preview: "Two-column layout with dark sidebar, photo, and accent color bar"
+        },
+        {
+            id: "neo timeline",
+            name: "Neo Timeline",
+            preview: "A modern timeline layout that highlights your career progression"
         },
     ]
   return (

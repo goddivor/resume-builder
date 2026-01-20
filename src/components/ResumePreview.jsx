@@ -3,10 +3,13 @@ import ClassicTemplate from './templates/ClassicTemplate'
 import ModernTemplate from './templates/ModernTemplate'
 import MinimalTemplate from './templates/MinimalTemplate'
 import MinimalImageTemplate from './templates/MinimalImageTemplate'
+import ProfessionalSidebarTemplate from './templates/ProfessionalSidebarTemplate'
+import NeoTimelineTemplate from './templates/NeoTimelineTemplate'
 
 const ResumePreview = ({data, template, accentColor, classes = "", language = "en"}) => {
 
     const showImage = data.template_settings?.[template]?.show_image !== false;
+    const sidebarColor = data.template_settings?.["professional-sidebar"]?.sidebar_color || "#4a4a4a";
 
     const renderTemplate = ()=>{
         switch (template) {
@@ -16,6 +19,10 @@ const ResumePreview = ({data, template, accentColor, classes = "", language = "e
                 return <MinimalTemplate data={data} accentColor={accentColor} showImage={showImage} language={language}/>;
             case "minimal-image":
                 return <MinimalImageTemplate data={data} accentColor={accentColor} showImage={showImage} language={language}/>;
+            case "professional-sidebar":
+                return <ProfessionalSidebarTemplate data={data} accentColor={accentColor} sidebarColor={sidebarColor} showImage={showImage} language={language}/>;
+            case "neo timeline":
+              return <NeoTimelineTemplate data={data} accentColor={accentColor} showImage={showImage} language={language}/>;
 
             default:
                 return <ClassicTemplate data={data} accentColor={accentColor} showImage={showImage} language={language}/>;
