@@ -1,4 +1,4 @@
-import { Calendar, PenTool, X } from 'lucide-react'
+import { Calendar, PenTool, ShieldCheck, X } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -50,6 +50,20 @@ const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSign
         )}
       </div>
 
+      {/* Declaration checkbox */}
+      <div className='mt-5'>
+        <label className='flex items-center gap-2 cursor-pointer text-sm text-gray-700'>
+            <input
+                type="checkbox"
+                checked={data.show_declaration || false}
+                onChange={(e) => handleChange('show_declaration', e.target.checked)}
+                className='w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+            />
+            <ShieldCheck className='size-4' color="#3b82f6" />
+            {t('forms.signature.declaration')}
+        </label>
+      </div>
+
       <div className='space-y-1 mt-5'>
         <label className="flex items-center gap-2 text-sm font-medium text-gray-600">
             <Calendar className="size-4"/>
@@ -62,6 +76,39 @@ const SignatureForm = ({data, onChange, removeSignatureBackground, setRemoveSign
             className='mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-500 focus:border-blue-500 outline-none transition-colors text-sm'
         />
       </div>
+
+      {/* Date format selector */}
+      {data.date && (
+        <div className='space-y-1 mt-4'>
+            <label className="text-sm font-medium text-gray-600">
+                {t('forms.signature.dateFormatLabel')}
+            </label>
+            <div className='flex gap-3 mt-1'>
+                <label className={`flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer text-sm transition-colors ${data.date_format !== 'short' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-600 hover:border-gray-400'}`}>
+                    <input
+                        type="radio"
+                        name="date_format"
+                        value="long"
+                        checked={data.date_format !== 'short'}
+                        onChange={() => handleChange('date_format', 'long')}
+                        className='sr-only'
+                    />
+                    {t('forms.signature.dateFormatLong')}
+                </label>
+                <label className={`flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer text-sm transition-colors ${data.date_format === 'short' ? 'border-blue-500 bg-blue-50 text-blue-700' : 'border-gray-300 text-gray-600 hover:border-gray-400'}`}>
+                    <input
+                        type="radio"
+                        name="date_format"
+                        value="short"
+                        checked={data.date_format === 'short'}
+                        onChange={() => handleChange('date_format', 'short')}
+                        className='sr-only'
+                    />
+                    {t('forms.signature.dateFormatShort')}
+                </label>
+            </div>
+        </div>
+      )}
     </div>
   )
 }
