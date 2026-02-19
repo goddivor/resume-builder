@@ -1,6 +1,7 @@
 import { BriefcaseBusiness, Globe, Linkedin, Mail, MapPin, Phone, User, X } from 'lucide-react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import ImageRepositioner from './ImageRepositioner'
 
 const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground}) => {
     const { t } = useTranslation();
@@ -10,7 +11,7 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
     }
 
     const removeImage = () => {
-        onChange({...data, image: ''})
+        onChange({...data, image: '', image_position: { x: 50, y: 50 }, image_scale: 1})
         setRemoveBackground(false)
     }
 
@@ -33,7 +34,7 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
             <div className='relative group mt-5'>
                 <label className='cursor-pointer'>
                     <img src={typeof data.image === 'string' ? data.image : URL.createObjectURL(data.image)} alt="user-image" className='w-16 h-16 rounded-full object-cover ring ring-slate-300 group-hover:opacity-80'/>
-                    <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=>handleChange("image", e.target.files[0])}/>
+                    <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=> onChange({...data, image: e.target.files[0], image_position: { x: 50, y: 50 }, image_scale: 1})}/>
                 </label>
                 <button onClick={removeImage} className='absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600'>
                     <X className='size-3'/>
@@ -43,7 +44,7 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
             <label className='inline-flex items-center gap-2 mt-5 text-slate-600 hover:text-slate-700 cursor-pointer'>
                 <User className='size-10 p-2.5 border rounded-full'/>
                 {t('forms.personalInfo.uploadImage')}
-                <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=>handleChange("image", e.target.files[0])}/>
+                <input type="file" accept="image/jpeg, image/png" className="hidden" onChange={(e)=> onChange({...data, image: e.target.files[0], image_position: { x: 50, y: 50 }, image_scale: 1})}/>
             </label>
         )}
         {typeof data.image === 'object' && (
@@ -58,6 +59,15 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
             </div>
         )}
       </div>
+      {data.image && (
+        <ImageRepositioner
+            imageSrc={typeof data.image === 'string' ? data.image : URL.createObjectURL(data.image)}
+            position={data.image_position || { x: 50, y: 50 }}
+            scale={data.image_scale || 1}
+            onPositionChange={(pos) => handleChange('image_position', pos)}
+            onScaleChange={(s) => handleChange('image_scale', s)}
+        />
+      )}
 
     {fields.map((field)=>{
         const Icon = field.icon;
