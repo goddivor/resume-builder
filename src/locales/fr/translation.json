@@ -202,6 +202,7 @@
       "removeBackground": "Supprimer l'arrière-plan",
       "repositionImage": "Glissez pour repositionner",
       "resetPosition": "Réinitialiser la position",
+      "adjustImage": "Ajuster l'image",
       "enterYour": "Entrez votre"
     },
     "professionalSummary": {
@@ -283,7 +284,11 @@
       "subtitle": "Ajoutez votre signature et la date (optionnel)",
       "uploadSignature": "importer la signature",
       "removeBackground": "Supprimer l'arrière-plan",
-      "date": "Date"
+      "date": "Date",
+      "declaration": "Déclaration sur l'honneur",
+      "dateFormatLabel": "Format de date",
+      "dateFormatShort": "Court (11/11/2025)",
+      "dateFormatLong": "Long (11 novembre 2025)"
     },
     "languages": {
       "title": "Langues",

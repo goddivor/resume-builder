@@ -15,6 +15,8 @@ export const translations = {
     signature: "SIGNATURE",
     date: "Date",
     present: "Present",
+    in: "in",
+    declaration: "I hereby certify the authenticity of the information contained in this curriculum vitae.",
     // Language proficiency levels
     native: "Native",
     fluent: "Fluent",
@@ -38,6 +40,8 @@ export const translations = {
     signature: "SIGNATURE",
     date: "Date",
     present: "Présent",
+    in: "en",
+    declaration: "Je certifie sur l'honneur l'authenticité des informations contenues dans le présent curriculum vitae.",
     // Language proficiency levels
     native: "Natif",
     fluent: "Courant",

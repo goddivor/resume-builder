@@ -202,6 +202,7 @@
       "removeBackground": "Remove Background",
       "repositionImage": "Drag to reposition",
       "resetPosition": "Reset position",
+      "adjustImage": "Adjust image",
       "enterYour": "Enter your"
     },
     "professionalSummary": {
@@ -283,7 +284,11 @@
       "subtitle": "Add your signature and date (optional)",
       "uploadSignature": "upload signature",
       "removeBackground": "Remove Background",
-      "date": "Date"
+      "date": "Date",
+      "declaration": "Declaration of honour",
+      "dateFormatLabel": "Date format",
+      "dateFormatShort": "Short (11/11/2025)",
+      "dateFormatLong": "Long (November 11, 2025)"
     },
     "languages": {
       "title": "Languages",
