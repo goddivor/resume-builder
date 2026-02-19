@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin, Calendar, Flag, Car, Briefcase, GraduationCap, Award } from "lucide-react";
 import { translations } from "../../utils/translations";
+import { getImagePositionStyle } from "../../utils/imagePosition";
 
 const ProfessionalSidebarTemplate = ({ data, accentColor, sidebarColor = "#4a4a4a", showImage = true, language = "en" }) => {
     const t = translations[language];
@@ -31,14 +32,17 @@ const ProfessionalSidebarTemplate = ({ data, accentColor, sidebarColor = "#4a4a4
                                 className="rounded-full p-1.5"
                                 style={{ backgroundColor: accentColor }}
                             >
-                                <img
-                                    src={typeof data.personal_info.image === 'string'
-                                        ? data.personal_info.image
-                                        : URL.createObjectURL(data.personal_info.image)
-                                    }
-                                    alt="Profile"
-                                    className="w-36 h-36 object-cover rounded-full"
-                                />
+                                <div className="w-36 h-36 rounded-full overflow-hidden">
+                                    <img
+                                        src={typeof data.personal_info.image === 'string'
+                                            ? data.personal_info.image
+                                            : URL.createObjectURL(data.personal_info.image)
+                                        }
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                        style={getImagePositionStyle(data.personal_info)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}

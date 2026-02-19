@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin, Calendar, Briefcase, GraduationCap, Award, Heart, Globe } from "lucide-react";
 import { translations } from "../../utils/translations";
+import { getImagePositionStyle } from "../../utils/imagePosition";
 
 const NeoTimelineTemplate = ({
     data,
@@ -44,15 +45,18 @@ const NeoTimelineTemplate = ({
                                 className="p-1 rounded-2xl"
                                 style={{ backgroundColor: accentColor }}
                             >
-                                <img
-                                    src={
-                                        typeof data.personal_info.image === "string"
-                                            ? data.personal_info.image
-                                            : URL.createObjectURL(data.personal_info.image)
-                                    }
-                                    alt="Profile"
-                                    className="w-28 h-28 object-cover rounded-xl"
-                                />
+                                <div className="w-28 h-28 rounded-xl overflow-hidden">
+                                    <img
+                                        src={
+                                            typeof data.personal_info.image === "string"
+                                                ? data.personal_info.image
+                                                : URL.createObjectURL(data.personal_info.image)
+                                        }
+                                        alt="Profile"
+                                        className="w-full h-full object-cover"
+                                        style={getImagePositionStyle(data.personal_info)}
+                                    />
+                                </div>
                             </div>
                         </div>
                     )}

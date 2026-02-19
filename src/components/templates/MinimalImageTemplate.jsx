@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin } from "lucide-react";
 import { translations } from "../../utils/translations";
+import { getImagePositionStyle } from "../../utils/imagePosition";
 
 const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
     const t = translations[language];
@@ -25,16 +26,17 @@ const MinimalImageTemplate = ({ data, accentColor, showImage = true, language = 
 
                 <div className="col-span-1  py-10">
                     {/* Image */}
-                    {showImage && data.personal_info?.image && typeof data.personal_info.image === 'string' ? (
+                    {showImage && data.personal_info?.image && (
                         <div className="mb-6">
-                            <img src={data.personal_info.image} alt="Profile" className="w-32 h-32 object-cover rounded-full mx-auto" style={{ background: accentColor+'70' }} />
-                        </div>
-                    ) : (
-                        showImage && data.personal_info?.image && typeof data.personal_info.image === 'object' ? (
-                            <div className="mb-6">
-                                <img src={URL.createObjectURL(data.personal_info.image)} alt="Profile" className="w-32 h-32 object-cover rounded-full mx-auto" />
+                            <div className="w-32 h-32 rounded-full mx-auto overflow-hidden" style={{ background: accentColor+'70' }}>
+                                <img
+                                    src={typeof data.personal_info.image === 'string' ? data.personal_info.image : URL.createObjectURL(data.personal_info.image)}
+                                    alt="Profile"
+                                    className="w-full h-full object-cover"
+                                    style={getImagePositionStyle(data.personal_info)}
+                                />
                             </div>
-                        ) : null
+                        </div>
                     )}
                 </div>
 

@@ -1,5 +1,6 @@
 import { Mail, Phone, MapPin, Linkedin, Globe } from "lucide-react";
 import { translations } from "../../utils/translations";
+import { getImagePositionStyle } from "../../utils/imagePosition";
 
 const ModernTemplate = ({ data, accentColor, showImage = true, language = "en" }) => {
 	const t = translations[language];
@@ -24,12 +25,15 @@ const ModernTemplate = ({ data, accentColor, showImage = true, language = "en" }
 			{/* Header */}
 			<header className="p-8 text-white" style={{ backgroundColor: accentColor }}>
 				<div className="flex items-center gap-6 mb-4">
-					{showImage && data.personal_info?.image && typeof data.personal_info.image === 'string' ? (
-						<img src={data.personal_info.image} alt="Profile" className="w-24 h-24 object-cover rounded-full border-4 border-white" />
-					) : (
-						showImage && data.personal_info?.image && typeof data.personal_info.image === 'object' ? (
-							<img src={URL.createObjectURL(data.personal_info.image)} alt="Profile" className="w-24 h-24 object-cover rounded-full border-4 border-white" />
-						) : null
+					{showImage && data.personal_info?.image && (
+						<div className="w-24 h-24 rounded-full border-4 border-white overflow-hidden flex-shrink-0">
+							<img
+								src={typeof data.personal_info.image === 'string' ? data.personal_info.image : URL.createObjectURL(data.personal_info.image)}
+								alt="Profile"
+								className="w-full h-full object-cover"
+								style={getImagePositionStyle(data.personal_info)}
+							/>
+						</div>
 					)}
 					<h1 className="text-4xl font-light">
 						{data.personal_info?.full_name || "Your Name"}
