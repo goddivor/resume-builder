@@ -151,7 +151,7 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
                             <div key={index} className="flex justify-between items-baseline">
                                 <div>
                                     <h3 className="font-medium">
-                                        {edu.degree} {edu.field && `in ${edu.field}`}
+                                        {edu.degree} {edu.field && `${t.in} ${edu.field}`}
                                     </h3>
                                     <p className="text-gray-600">{edu.institution}</p>
                                     {edu.gpa && <p className="text-sm text-gray-500">GPA: {edu.gpa}</p>}
@@ -219,8 +219,11 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
             )}
 
             {/* Signature */}
-            {(data.signature?.image || data.signature?.date) && (
+            {(data.signature?.image || data.signature?.date || data.signature?.show_declaration) && (
                 <section className="mt-10">
+                    {data.signature.show_declaration && (
+                        <p className="text-sm text-gray-700 italic mb-4">{t.declaration}</p>
+                    )}
                     <div className="flex flex-col items-end">
                         {data.signature.image && (
                             <img
@@ -231,7 +234,9 @@ const MinimalTemplate = ({ data, accentColor, showImage = true, language = "en" 
                         )}
                         {data.signature.date && (
                             <p className="text-sm text-gray-600">
-                                {t.date}: {new Date(data.signature.date).toLocaleDateString()}
+                                {t.date}: {data.signature.date_format === 'short'
+                                    ? new Date(data.signature.date).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')
+                                    : new Date(data.signature.date).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                             </p>
                         )}
                     </div>

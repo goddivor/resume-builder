@@ -333,8 +333,11 @@ const ProfessionalSidebarTemplate = ({ data, accentColor, sidebarColor = "#4a4a4
                         )}
 
                         {/* Signature */}
-                        {(data.signature?.image || data.signature?.date) && (
+                        {(data.signature?.image || data.signature?.date || data.signature?.show_declaration) && (
                             <section className="mt-8">
+                                {data.signature.show_declaration && (
+                                    <p className="text-xs text-zinc-700 italic mb-4">{t.declaration}</p>
+                                )}
                                 <div className="flex flex-col items-end">
                                     {data.signature.image && (
                                         <img
@@ -348,7 +351,9 @@ const ProfessionalSidebarTemplate = ({ data, accentColor, sidebarColor = "#4a4a4
                                     )}
                                     {data.signature.date && (
                                         <p className="text-xs text-zinc-600">
-                                            {t.date}: {new Date(data.signature.date).toLocaleDateString()}
+                                            {t.date}: {data.signature.date_format === 'short'
+                                                ? new Date(data.signature.date).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US')
+                                                : new Date(data.signature.date).toLocaleDateString(language === 'fr' ? 'fr-FR' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                                         </p>
                                     )}
                                 </div>
