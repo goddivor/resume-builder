@@ -200,6 +200,8 @@
       "website": "Site web personnel",
       "uploadImage": "importer l'image de profil",
       "removeBackground": "Supprimer l'arrière-plan",
+      "repositionImage": "Glissez pour repositionner",
+      "resetPosition": "Réinitialiser la position",
       "enterYour": "Entrez votre"
     },
     "professionalSummary": {

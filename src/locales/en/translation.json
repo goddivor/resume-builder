@@ -200,6 +200,8 @@
       "website": "Personal Website",
       "uploadImage": "upload user image",
       "removeBackground": "Remove Background",
+      "repositionImage": "Drag to reposition",
+      "resetPosition": "Reset position",
       "enterYour": "Enter your"
     },
     "professionalSummary": {
