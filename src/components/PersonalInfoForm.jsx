@@ -1,10 +1,11 @@
-import { BriefcaseBusiness, Globe, Linkedin, Mail, MapPin, Phone, User, X } from 'lucide-react'
-import React from 'react'
+import { BriefcaseBusiness, Globe, Linkedin, Mail, MapPin, Phone, User, X, Crop } from 'lucide-react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ImageRepositioner from './ImageRepositioner'
 
 const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground}) => {
     const { t } = useTranslation();
+    const [showRepositioner, setShowRepositioner] = useState(false)
 
     const handleChange = (field, value)=>{
         onChange({...data, [field]: value})
@@ -60,13 +61,25 @@ const PersonalInfoForm = ({data, onChange, removeBackground, setRemoveBackground
         )}
       </div>
       {data.image && (
-        <ImageRepositioner
-            imageSrc={typeof data.image === 'string' ? data.image : URL.createObjectURL(data.image)}
-            position={data.image_position || { x: 50, y: 50 }}
-            scale={data.image_scale || 1}
-            onPositionChange={(pos) => handleChange('image_position', pos)}
-            onScaleChange={(s) => handleChange('image_scale', s)}
-        />
+        <div className='mt-3'>
+            <button
+                type="button"
+                onClick={() => setShowRepositioner(prev => !prev)}
+                className='flex items-center gap-1.5 text-xs text-blue-600 hover:text-blue-700 transition-colors'
+            >
+                <Crop className='size-3.5' color="currentColor" />
+                {t('forms.personalInfo.adjustImage')}
+            </button>
+            {showRepositioner && (
+                <ImageRepositioner
+                    imageSrc={typeof data.image === 'string' ? data.image : URL.createObjectURL(data.image)}
+                    position={data.image_position || { x: 50, y: 50 }}
+                    scale={data.image_scale || 1}
+                    onPositionChange={(pos) => handleChange('image_position', pos)}
+                    onScaleChange={(s) => handleChange('image_scale', s)}
+                />
+            )}
+        </div>
       )}
 
     {fields.map((field)=>{
