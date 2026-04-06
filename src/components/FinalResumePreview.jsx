@@ -34,7 +34,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor, langua
   return (
     <div className='space-y-8'>
       {/* Resume Pages */}
-      <div className='bg-white shadow-lg'>
+      <div id="resume-capture" className='bg-white shadow-lg'>
         <ResumePreview
           data={resumeData}
           template={template}
@@ -47,7 +47,7 @@ const FinalResumePreview = ({ resumeData, annexes, template, accentColor, langua
       {/* Annexe Separator Page (only if there are annexes) */}
       {annexes && annexes.length > 0 && (
         <>
-          <div className='shadow-lg'>
+          <div id="annexe-page-capture" className='shadow-lg'>
             <AnnexePage />
           </div>
 

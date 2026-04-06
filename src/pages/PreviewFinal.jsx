@@ -9,6 +9,8 @@ import ColorPicker from '../components/ColorPicker';
 import { ArrowLeftIcon, DownloadIcon, Share2Icon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { PDFDocument } from 'pdf-lib';
+import html2canvas from 'html2canvas-pro';
+import { jsPDF } from 'jspdf';
 import { useTranslation } from 'react-i18next';
 
 const PreviewFinal = () => {
@@ -85,64 +87,100 @@ const PreviewFinal = () => {
     try {
       toastId = toast.loading(t('previewFinal.generatingCompletePDF'));
 
-      // 1. Créer un PDF merger
-      const mergedPdf = await PDFDocument.create();
+      // 1. Capturer le DOM du CV avec html2canvas
+      const resumeElement = document.getElementById('resume-capture');
+      if (!resumeElement) throw new Error('Resume element not found');
 
-      // 2. Générer le PDF du CV via l'API backend (évite le problème oklch)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 secondes de timeout
-
-      const cvResponse = await fetch(`${import.meta.env.VITE_BASE_URL}/api/resumes/${resumeId}/generate-pdf`, {
-        method: 'POST',
-        headers: {
-          'Authorization': token,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          template,
-          accentColor
-        }),
-        signal: controller.signal
+      const canvas = await html2canvas(resumeElement, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
       });
 
-      clearTimeout(timeoutId);
+      // 2. Créer le PDF — tout le CV sur une seule page A4
+      const pdfWidthMm = 210;
+      const pdfHeightMm = 297;
 
-      if (!cvResponse.ok) {
-        throw new Error('Failed to generate resume PDF');
+      const imgAspectRatio = canvas.height / canvas.width;
+      const a4AspectRatio = pdfHeightMm / pdfWidthMm;
+
+      let imgWidthMm, imgHeightMm;
+      if (imgAspectRatio > a4AspectRatio) {
+        // Le contenu est plus haut que l'A4 → on fit par la hauteur
+        imgHeightMm = pdfHeightMm;
+        imgWidthMm = pdfHeightMm / imgAspectRatio;
+      } else {
+        // Le contenu est plus large ou proportionnel → on fit par la largeur
+        imgWidthMm = pdfWidthMm;
+        imgHeightMm = pdfWidthMm * imgAspectRatio;
       }
 
-      const cvPdfBytes = await cvResponse.arrayBuffer();
+      // Centrer l'image sur la page
+      const offsetX = (pdfWidthMm - imgWidthMm) / 2;
+      const offsetY = (pdfHeightMm - imgHeightMm) / 2;
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      pdf.addImage(imgData, 'JPEG', offsetX, offsetY, imgWidthMm, imgHeightMm);
+
+      // 3. Si pas d'annexes, télécharger directement
+      if (!annexes || annexes.length === 0) {
+        pdf.save(`${resumeData.title || 'Resume'}_Complete.pdf`);
+        toast.dismiss(toastId);
+        toast.success(t('previewFinal.pdfDownloadSuccess'));
+        setIsDownloading(false);
+        return;
+      }
+
+      // 4. S'il y a des annexes, merger avec pdf-lib
+      const cvPdfBytes = pdf.output('arraybuffer');
+      const mergedPdf = await PDFDocument.create();
       const cvPdfDoc = await PDFDocument.load(cvPdfBytes);
 
-      // Copier les pages du CV
       const cvPages = await mergedPdf.copyPages(cvPdfDoc, cvPdfDoc.getPageIndices());
       cvPages.forEach(page => mergedPdf.addPage(page));
 
-      // 3. Ajouter la page "ANNEXES" si il y a des annexes
-      if (annexes && annexes.length > 0) {
-        const annexePage = mergedPdf.addPage([595.28, 841.89]); // A4 size in points
-        annexePage.drawText(t('previewFinal.annexes'), {
-          x: 220,
-          y: 420,
-          size: 48,
+      // 5. Capturer la page "ANNEXES" du DOM
+      const annexePageEl = document.getElementById('annexe-page-capture');
+      if (annexePageEl) {
+        const annexeCanvas = await html2canvas(annexePageEl, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
         });
+        const annexeImgData = annexeCanvas.toDataURL('image/jpeg', 0.95);
+        const annexeRatio = annexeCanvas.height / annexeCanvas.width;
+        const annexeWidthMm = 210;
+        const annexeHeightMm = annexeWidthMm * annexeRatio;
+        const annexeOffsetY = (297 - annexeHeightMm) / 2;
 
-        // 4. Ajouter les PDFs des annexes
-        for (const annexe of annexes) {
-          try {
-            const proxyUrl = `${import.meta.env.VITE_BASE_URL}/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}`;
-            const annexePdfBytes = await fetch(proxyUrl).then(res => res.arrayBuffer());
-            const annexePdfDoc = await PDFDocument.load(annexePdfBytes);
+        const annexeJsPdf = new jsPDF('p', 'mm', 'a4');
+        annexeJsPdf.addImage(annexeImgData, 'JPEG', 0, Math.max(0, annexeOffsetY), annexeWidthMm, annexeHeightMm);
 
-            const annexePages = await mergedPdf.copyPages(annexePdfDoc, annexePdfDoc.getPageIndices());
-            annexePages.forEach(page => mergedPdf.addPage(page));
-          } catch (error) {
-            console.error('Error adding annexe:', error);
-          }
+        const annexePageBytes = annexeJsPdf.output('arraybuffer');
+        const annexePageDoc = await PDFDocument.load(annexePageBytes);
+        const annexePagePages = await mergedPdf.copyPages(annexePageDoc, annexePageDoc.getPageIndices());
+        annexePagePages.forEach(page => mergedPdf.addPage(page));
+      }
+
+      // 6. Ajouter les PDFs des annexes
+      for (const annexe of annexes) {
+        try {
+          const proxyUrl = `${import.meta.env.VITE_BASE_URL}/api/proxy/pdf?url=${encodeURIComponent(annexe.fileUrl)}`;
+          const annexePdfBytes = await fetch(proxyUrl).then(res => res.arrayBuffer());
+          const annexePdfDoc = await PDFDocument.load(annexePdfBytes);
+
+          const annexePages = await mergedPdf.copyPages(annexePdfDoc, annexePdfDoc.getPageIndices());
+          annexePages.forEach(page => mergedPdf.addPage(page));
+        } catch (error) {
+          console.error('Error adding annexe:', error);
         }
       }
 
-      // 5. Sauvegarder et télécharger
+      // 7. Sauvegarder et télécharger
       const pdfBytes = await mergedPdf.save();
       const blob = new Blob([pdfBytes], { type: 'application/pdf' });
       const url = window.URL.createObjectURL(blob);
